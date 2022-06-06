@@ -1,13 +1,14 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <Windows.h>
 #include <conio.h>
 #include <map>
 #include <list>
 #include <string>
 
-#include "storylib.h"
 #include "story.h"
+#include "storylib.h"
 #include "util.h"
+#include "design.h"
 
 #pragma warning(disable : 4996)
 #define _CRT_SECURE_NO_WARNINGS
@@ -20,21 +21,14 @@
 #define ESC 27
 #define SPACE 32
 
-// 게임맵의 크기
-#define MAP_SIZE_X 60
-#define MAP_SIZE_Y 30
-
 using namespace std;
+
+void map_init();
+void print_menu();
 
 // 전역변수
 extern status M;    // 상태
 extern inventory I; // 인벤토리
-
-void print_menu();
-void set_map();
-void print_map();
-void map_init();
-
 
 
 // 커서 위치 구조체
@@ -56,6 +50,9 @@ typedef struct cursor_position_bound
 // 맵에서 커서(@)를 움직일 수 있는 범위
 POS_BOUND map_bound = { 1, MAP_SIZE_X-2, 1, MAP_SIZE_Y-2 };
 POS_BOUND* p_map_bound = &map_bound;
+// 메뉴에서 커서(>)를 움직일 수 있는 범위
+POS_BOUND menu_bound = { 11, 13, 23, 27 };
+POS_BOUND* p_menu_bound = &menu_bound;
 // 인벤토리에서 커서(>)를 움직일 수 있는 범위
 POS_BOUND inventory_bound = { -1, 1, 2, 6 };
 POS_BOUND* p_inventory_bound = &inventory_bound;
@@ -95,31 +92,16 @@ void move_cursor(POS* p_pos, POS_BOUND* p_bound, int key, char object)
     printf("%c", object);
 }
 
-void print_status()
-{
-    cursor_visible(false);
-    setColor(red, black);
-    printf("[ 배고픔 ]");
-    setColor(white, black);
-    printf("은 최대값이 100이며, 10까지 내려가면 쓰러집니다. \n");
-    setColor(red, black);
-    printf("[ 체온 ]");
-    setColor(white, black);
-    printf("은 정상 체온이 36, 최대값이 40이며 이에 도달하면 죽고 32까지 내려가도 죽습니다. \n");
-
-    gotoxy(0, 20);
-    printf("종료하려면 [esc]를 누르세요");
-}
 
 void print_inventory()
 {
-    cursor_visible(true);
+    cursor_visible(true); // 커서를 보이게 한다
     setColor(white, black);
 
-    POS pos = { 0, 2 };
+    POS pos = { 0, 2 }; // 커서 위치 설정
 
     // 위에서부터 순서대로 아이템 목록을 출력한다.
-    gotoxy(pos.x, pos.y); // -2 한 이유는 > 를 출력해야하기 때문에  
+    gotoxy(pos.x, pos.y); 
     printf("> [부싯돌]");
     gotoxy(pos.x+2, pos.y + 1);
     printf("[안경]");
@@ -130,23 +112,23 @@ void print_inventory()
     gotoxy(pos.x+2, pos.y + 4);
     printf("[자몽]");
 
-
+    // 하단 UI에 출력
     gotoxy(pos.x, pos.y + 5);
     printf("아이템을 사용하려면 [space]를 누르세요");
     gotoxy(0, 20);
     printf("종료하려면 [esc]를 누르세요");
 
-    gotoxy(pos.x - 2, pos.y);
-    pos = { 0, 2 };
+    gotoxy(pos.x, pos.y); //  >가 출력되었던 위치로 커서 이동
     POS* p_inventory_pos = &pos;
     while (1)
     {
-        if (kbhit())
+        if (kbhit()) // 키 입력이 있으면,
         {
+            //getch() 함수를 이용해서 방향키 값을 읽어들이면 두 번 반환한다
             int key = getch(); // 입력받은 키의 아스키 코드 값을 저장한다
             if (key == 224) // 키가 방향키라면
             {
-                int sub_key = getch();
+                int sub_key = getch(); // 입력받은 키의 아스키 코드
                 if (sub_key == UP || sub_key == DOWN)
                     move_cursor(p_inventory_pos, p_inventory_bound, sub_key, '>');
             }
@@ -260,12 +242,6 @@ void key_map(POS* p_map_pos)
             system("cls");
             map_init();
             break;
-
-        case 's':
-        case 'S':
-            system("cls");
-            print_status();
-            break;
         case 'i':
         case 'I':
             system("cls");
@@ -280,7 +256,6 @@ void key_map(POS* p_map_pos)
 void map_init() // 프로그램 실행 후 초기화
 {
     system("cls");
-    set_map();
     print_map();
     gotoxy(30, 13); // 플레이어 위치지정
     printf("@");    // 플레이어 출력
@@ -305,12 +280,6 @@ void loop_story()
                 break;
             case ESC:
                 options = callStoryFunc();
-                break;
-
-            case 's':
-            case 'S':
-                system("cls");
-                print_status();
                 break;
             case 'i':
             case 'I':
@@ -359,11 +328,11 @@ int main()
 {
     init();
     print_menu();
-    while (keyCheckerIgnoreCase('1') == false)
-    {
-        Sleep(100);
-    }
+    system("cls");
+    gotoxy(0, 0);
+    story_intro();
     map_init();
+    print_UI();
     story_init();
 
     POS map_current_pos;
@@ -382,8 +351,6 @@ int main()
     return 0;
 }
 
-int map_game[MAP_SIZE_Y][MAP_SIZE_X] = {};
-
 void print_menu()
 {
     printf(" -----------------------------------------------\n");
@@ -394,41 +361,42 @@ void print_menu()
     setColor(white, black);
     printf("에서 살아남기             | \n");
     printf("|                                               |\n");
-    printf("|             press 1 key to start              |\n");
+    printf("|                                               |\n");
     printf(" -----------------------------------------------\n");
 
-}
-void set_map()
-{
-    for (int i = 0; i < MAP_SIZE_Y; i++)
-    {
-        for (int j = 0; j < MAP_SIZE_X; j++)
+    POS menu_pos = { 12, 24 };
+    gotoxy(menu_pos.x, menu_pos.y);
+    printf("> 게임시작");
+    gotoxy(menu_pos.x + 1, menu_pos.y + 1);
+    printf("게임정보");
+    gotoxy(menu_pos.x + 2, menu_pos.y + 2);
+    printf("  종료  ");
+    while (1) { // 무한반복  
+        gotoxy(menu_pos.x, menu_pos.y); //  >가 출력되었던 위치로 커서 이동
+        POS* p_menu_pos = &menu_pos;
+        while (1)
         {
-            if (i == 0 || i == MAP_SIZE_Y-1 || j == 0 || j == MAP_SIZE_X-1)
-                map_game[i][j] = 1;
-            else
-                map_game[i][j] == 0;
+            if (kbhit()) // 키 입력이 있으면,
+            {
+                //getch() 함수를 이용해서 방향키 값을 읽어들이면 두 번 반환한다
+                int key = getch(); // 입력받은 키의 아스키 코드 값을 저장한다
+                if (key == 224) // 키가 방향키라면
+                {
+                    int sub_key = getch(); // 입력받은 키의 아스키 코드
+                    if (sub_key == UP || sub_key == DOWN)
+                        move_cursor(p_menu_pos, p_menu_bound, sub_key, '>');
+                }
+
+                else if (key == SPACE)
+                {
+                    if (menu_pos.y == 24)
+                        return;
+                    else if (menu_pos.y == 25)
+                        return;
+                }
+            }
         }
     }
 }
 
-void print_map()
-{
-    for (int i = 0; i < MAP_SIZE_Y; i++)
-    {
-        for (int j = 0; j < MAP_SIZE_X; j++)
-        {
-           int type = map_game[i][j];
-           switch (type)
-           {
-           case 1:
-               printf("#");
-               break;
-           case 0: 
-               printf(" ");
-               break;
-           }
-        }
-        printf("\n");
-    }
-}
+
