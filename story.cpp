@@ -3,24 +3,26 @@
 #include <conio.h>
 #include <list>
 #include <iostream>
+#include <cstdlib>
+#include <ctime> // srand í•¨ìˆ˜ì˜ ì‹œë“œ
 
 #include "util.h"
 #include "storylib.h"
 #include "story.h"
 
 
-#define SLEEP_TIME 1000
-#define SLEEP_TIME2 50
+#define SLEEP_TIME 0
+#define SLEEP_TIME2 10
 
 using namespace std;
 
 int totalscore = 100;
 int bunnycatch = 0;
 
-extern status M;      // »óÅÂ   - ¿ÜºÎ Àü¿ªº¯¼ö ÂüÁ¶
+extern status M;      // ìƒíƒœ   - ì™¸ë¶€ ì „ì—­ë³€ìˆ˜ ì°¸ì¡°
 
 /*
-   ½ºÅä¸® ÇÔ¼ö¿Í Å°¸¦ ¸ÅÇÎÇÏ¿© ÃÊ±âÈ­
+   ìŠ¤í† ë¦¬ í•¨ìˆ˜ì™€ í‚¤ë¥¼ ë§¤í•‘í•˜ì—¬ ì´ˆê¸°í™”
 */
 void story_init()
 {
@@ -43,11 +45,10 @@ void story_init()
     addStory(string("3"), story3);
     addStory(string("3_1"), story3_1);
     addStory(string("3_1_m"), story3_1_m);
+    addStory(string("3_1_m_0"), story3_1_m_0);
     addStory(string("3_1_m_1"), story3_1_m_1);
     addStory(string("3_1_m_2"), story3_1_m_2);
     addStory(string("3_1_m_3"), story3_1_m_3);
-    addStory(string("3_1_m_4"), story3_1_m_4);
-    addStory(string("3_1_m_5"), story3_1_m_5);
 
     addStory(string("3_1_e"), story3_1_e);
     addStory(string("3_1_e_1"), story3_1_e_1);
@@ -71,14 +72,6 @@ void story_init()
 
 }
 
-void setcolor(int color, int bgcolor)
-
-{
-    color &= 0xf;
-    bgcolor &= 0xf;
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (bgcolor << 4) | color);
-}
-
 int cntintro = 0;
 int cntbegin = 0;
 int cnt1 = 0;
@@ -96,11 +89,6 @@ int cnt2_2 = 0;
 int cnt3 = 0;
 int cnt3_1 = 0;
 int cnt3_1_m = 0;
-int cnt3_1_m_1 = 0;
-int cnt3_1_m_2 = 0;
-int cnt3_1_m_3 = 0;
-int cnt3_1_m_4 = 0;
-int cnt3_1_m_5 = 0;
 int cnt3_1_e = 0;
 int cnt3_1_e_1 = 0;
 int cnt3_1_e_1_1 = 0;
@@ -123,6 +111,15 @@ int cnt3_3_2 = 0;
 int cnt3_3_1 = 0;
 
 
+void scriptEx(string script)
+{
+    for (int i = 0; i < script.length(); i++)
+    {
+        printf("%c", script[i]);
+            Sleep(SLEEP_TIME2);
+    }
+}
+
 void scriptEx(string script, int cnt)
 {
     for (int i = 0; i < script.length(); i++)
@@ -138,9 +135,9 @@ void scriptEx(string script, int cnt)
 
 list<char> story_intro()
 {
-    string script1 = "ÀÌ °ÔÀÓÀº ÇÃ·¹ÀÌ¾îÀÇ ¼±ÅÃ¿¡ µû¶ó ½ºÅä¸®°¡ ÁÂ¿ìµË´Ï´Ù. \n\n";
+    string script1 = "ì´ ê²Œì„ì€ í”Œë ˆì´ì–´ì˜ ì„ íƒì— ë”°ë¼ ìŠ¤í† ë¦¬ê°€ ì¢Œìš°ë©ë‹ˆë‹¤. \n\n";
     scriptEx(script1, cntintro);
-    string script2 = "½ÅÁßÇÏ°Ô ¼±ÅÃÇÏ¿© ÇÃ·¹ÀÌÇÏ½Ã±æ ¹Ù¶ø´Ï´Ù. \n\n";
+    string script2 = "ì‹ ì¤‘í•˜ê²Œ ì„ íƒí•˜ì—¬ í”Œë ˆì´í•˜ì‹œê¸¸ ë°”ëë‹ˆë‹¤. \n\n";
     scriptEx(script2, cntintro);
     cntintro++;
 
@@ -149,13 +146,13 @@ list<char> story_intro()
 
 list<char> story_begin()
 {
-    string script1 = "°¥¸Å±â ¼Ò¸®¿Í ÇÔ²² ´«À» ¶¹´Ù.\n";
+    string script1 = "ê°ˆë§¤ê¸° ì†Œë¦¬ì™€ í•¨ê»˜ ëˆˆì„ ë–´ë‹¤.\n\n";
     scriptEx(script1, cntbegin);
-    string script2 = "¼Õ°¡¶ôÀ» ²ŞÆ²°Å¸®¸ç ÃµÃµÈ÷ ÀÏ¾î³µ´Âµ¥, ÀÌ·±... ¿ÊÀÌ ´Ù Á¥¾ú´Ù. \n\n";
+    string script2 = "ì†ê°€ë½ì„ ê¿ˆí‹€ê±°ë¦¬ë©° ì²œì²œíˆ ì¼ì–´ë‚¬ëŠ”ë°, ì´ëŸ°... ì˜·ì´ ë‹¤ ì –ì—ˆë‹¤. \n\n";
     scriptEx(script2, cntbegin);
 
-    printf("1. ¿ÊÀ» ³ª¹«¿¡ °É¾î Àá½Ã ¸»·ÁµĞ´Ù. \n");
-    printf("2. ¿ÊÀ» ¸»¸®Áö ¾Ê´Â´Ù. \n\n");
+    printf("1. ì˜·ì„ ë‚˜ë¬´ì— ê±¸ì–´ ì ì‹œ ë§ë ¤ë‘”ë‹¤. \n");
+    printf("2. ì˜·ì„ ë§ë¦¬ì§€ ì•ŠëŠ”ë‹¤. \n\n");
     cntbegin++;
 
     return list<char>{'1', '2'};
@@ -163,13 +160,13 @@ list<char> story_begin()
 
 list <char> story1()
 {
-    string script1 = "¿ø¼şÀÌ°¡ ³» ¿ÊÀ» °¡Á®°¬´Ù! \n\n";
+    string script1 = "ì›ìˆ­ì´ê°€ ë‚´ ì˜·ì„ ê°€ì ¸ê°”ë‹¤! \n\n";
     scriptEx(script1, cnt1);
-    string script2 = "±ÙÃ³¿¡ µ¹ÀÌ º¸¿© ÀÌ¸¦ Áı¾îµé¾ú´Ù. \n\n";
+    string script2 = "ì–´ì„œ ì„œë‘ë¥´ì§€ ì•Šìœ¼ë©´ ë‚´ ì˜·ì´ ì‚¬ë¼ì§„ë‹¤! \n\n";
     scriptEx(script2, cnt1);
 
-    printf("1. ¿ø¼şÀÌ¸¦ ´Ş·¡º¸ÀÚ. \n");
-    printf("2. ¿ø¼şÀÌÂëÀÌ¾ß. ½Î¿ö¼­ °¡Á®¿ÀÁö ¹¹! \n\n");
+    printf("1. ê·¸ë˜ë„ ëŒì€ ì¢€... ë§ì„±ì—¬ì§„ë‹¤...ì›ìˆ­ì´ë¥¼ ë‹¬ë˜ë³´ì. \n");
+    printf("2. ì›ìˆ­ì´ì¯¤ì´ì•¼ ê·¸ëƒ¥ ë˜ì ¸! ë¤ë¹„ë©´ ì‹¸ì›Œì„œ ê°€ì ¸ì˜¤ì§€ ë­! \n\n");
     cnt1++;
 
     return list<char>{'1', '2'};
@@ -179,25 +176,26 @@ list <char> story1()
 
 list<char> story1_1()
 {
-    string script1 = "ÁÖº¯À» µÑ·¯º¸´Ï »ı°¢º¸´Ù ¸ÔÀ» °ÍÀ» ¸¹ÀÌ °®Ãá ¼¶ÀÌ´Ù. \n\n";
+    string script1 = "ì£¼ë³€ì„ ë‘˜ëŸ¬ë³´ë‹ˆ ìƒê°ë³´ë‹¤ ë¨¹ì„ ê²ƒì„ ë§ì´ ê°–ì¶˜ ì„¬ì´ë‹¤. \n\n";
     scriptEx(script1, cnt1_1);
-    string script2 = "Å½½º·´°Ô ¿­¸° ¿­¸Å¿Í °úÀÏµéÀÌ º¸ÀÎ´Ù. \n°¡±îÀÌ ´Ù°¡°¡´Ï ¹Ù³ª³ª¿Í ÀÚ¸ùÀÌ º¸ÀÎ´Ù. \n\n";
+    string script2 = "íƒìŠ¤ëŸ½ê²Œ ì—´ë¦° ì—´ë§¤ì™€ ê³¼ì¼ë“¤ì´ ë³´ì¸ë‹¤. \nê°€ê¹Œì´ ë‹¤ê°€ê°€ë‹ˆ ë°”ë‚˜ë‚˜ì™€ ìëª½ì´ ë³´ì¸ë‹¤. \n\n";
     scriptEx(script2, cnt1_1);
-    string script3 = "³»°¡ °¡Áø °Íµé Áß ÇÏ³ª¸¦ È°¿ëÇØº¸ÀÚ. \n";
+    string script3 = "ë‚´ê°€ ê°€ì§„ ê²ƒë“¤ ì¤‘ í•˜ë‚˜ë¥¼ í™œìš©í•´ë³´ì. \n";
     scriptEx(script3, cnt1_1);
     cnt1_1++;
 
     return list<char>{};
 }
 
-list<char> story1_1_1() // ÀÎº¥Åä¸®¿¡¼­ ¹Ù³ª³ª »ç¿ë
+list<char> story1_1_1() // ì¸ë²¤í† ë¦¬ì—ì„œ ë°”ë‚˜ë‚˜ ì‚¬ìš©
 {
-    string script1 = "¿ø¼şÀÌ¿¡°Ô Á¶½É½º·´°Ô ¹Ù³ª³ª¸¦ °Ç³Ş´Ù. \n";
+    string script1 = "ì›ìˆ­ì´ì—ê²Œ ì¡°ì‹¬ìŠ¤ëŸ½ê²Œ ë°”ë‚˜ë‚˜ë¥¼ ê±´ë„¸ë‹¤. \n\n";
     scriptEx(script1, cnt1_1_1);
-    string script2 = "¾Æ´Ï ÀÌ°É °ÅºÎÇÑ´Ù°í? È¥Á¾ÀÎ°¡ º¸´Ù. \n\n";
+    Sleep(1000);
+    string script2 = "ì•„ë‹ˆ ì´ê±¸ ê±°ë¶€í•œë‹¤ê³ ? í˜¼ì¢…ì¸ê°€ ë³´ë‹¤. \n\n";
     scriptEx(script2, cnt1_1_1);
-    M.Hp -= 10; //Hp ÇÏ°­
-    string script3 = "¿ÊÀ» ¾òÁö ¸øÇß°í, ³Ê¹« Ãä´Ù. \n\n";
+    M.Hp -= 10; //Hp í•˜ê°•
+    string script3 = "ì˜·ì„ ì–»ì§€ ëª»í–ˆê³ , ë„ˆë¬´ ì¶¥ë‹¤. \n\n";
     scriptEx(script3, cnt1_1_1);
     cnt1_1_1++;
 
@@ -206,13 +204,14 @@ list<char> story1_1_1() // ÀÎº¥Åä¸®¿¡¼­ ¹Ù³ª³ª »ç¿ë
     return callStoryFunc();
 }
 
-list<char> story1_1_2() // ÀÎº¥Åä¸®¿¡¼­ ÀÚ¸ù »ç¿ë
+list<char> story1_1_2() // ì¸ë²¤í† ë¦¬ì—ì„œ ìëª½ ì‚¬ìš©
 {
-    string script1 = "¿ø¼şÀÌ¿¡°Ô Á¶½É½º·´°Ô ÀÚ¸ùÀ» °Ç³Ş´Ù. \n";
+    string script1 = "ì›ìˆ­ì´ì—ê²Œ ì¡°ì‹¬ìŠ¤ëŸ½ê²Œ ìëª½ì„ ê±´ë„¸ë‹¤. \n\n";
     scriptEx(script1, cnt1_1_2);
-    string script2 = "¿ø¼şÀÌ°¡ ¿ÊÀ» µ¹·ÁÁÖ¾ú´Ù!\n\n";
+    Sleep(1000);
+    string script2 = "ì›ìˆ­ì´ê°€ ì˜·ì„ ëŒë ¤ì£¼ì—ˆë‹¤!\n\n";
     scriptEx(script2, cnt1_1_2);
-    string script3 = "´ÙÇàÈ÷ ¿Ê ¾È¿¡ ÀÖ´ø ÁÖ¸Ó´ÏÄ®µµ ¸ÖÂÄÇÏ´Ù. ²À Àß °£¼öÇÏµµ·Ï ÇÏÀÚ. \n\n";
+    string script3 = "ë‹¤í–‰íˆ ì˜·ì€ ë©€ì©¡í•˜ë‹¤. ì•ìœ¼ë¡œëŠ” ì˜ ê°„ìˆ˜í•˜ë„ë¡ í•˜ì. \n\n";
     cnt1_1_2++;
 
     rebuildStoryPath(list<char>{'3'});
@@ -220,42 +219,45 @@ list<char> story1_1_2() // ÀÎº¥Åä¸®¿¡¼­ ÀÚ¸ù »ç¿ë
     return callStoryFunc();
 }
 
-list<char>story1_2() //½Î¿ì´Â °æ¿ì
+list<char>story1_2() //ì‹¸ìš°ëŠ” ê²½ìš°
 {
     M.Hp -= 10;
-    string script1 = "¸·»ó ½Î¿ì·Á´Ï Á¶±İÀº ¸·¸·ÇÏ´Ù. \n¿ø¼şÀÌ¿Í µÎ ´«À» ¸¶ÁÖÇÑÁö ¸î ÃÊ °¡·® Èê·¶´Ù. \n";
+    string script1 = "ë§‰ìƒ ì‹¸ìš°ë ¤ë‹ˆ ì¡°ê¸ˆì€ ë§‰ë§‰í•˜ë‹¤. \n\n"; 
     scriptEx(script1, cnt1_2);
-    string script2 = "ÀÌ°Ô ¹¹¶ó°í ½ÄÀº¶¡ÀÌ Èå¸¦ ÀÏÀÎ°¡. \n³ªÀÇ Çàµ¿À» ½ÅÁßÈ÷ÇØ¾ß°Ú´Ù. \n";
+    string script2 = "ì›ìˆ­ì´ì™€ ë‘ ëˆˆì„ ë§ˆì£¼í•œì§€ ëª‡ ì´ˆ ê°€ëŸ‰ í˜ë €ë‹¤. \n\n";
     scriptEx(script2, cnt1_2);
-    string script3 = "°©ÀÚ±â ¿ø¼şÀÌ°¡ µµ¸Á°£´Ù! \nÀÌ´ë·Î µµ¸Á°¡¸é ¿ÊÀ» ÀÒ´Â´Ù! \n\n";
+    string script3 = "ì´ê²Œ ë­ë¼ê³  ì‹ì€ë•€ì´ íë¥¼ ì¼ì¸ê°€...ë‚˜ì˜ í–‰ë™ì„ ì‹ ì¤‘íˆí•´ì•¼ê² ë‹¤. \n\n\n";
+    scriptEx(script3, cnt1_2);
+    string script4 = "ê°‘ìê¸° ì›ìˆ­ì´ê°€ ë„ë§ê°„ë‹¤! ì´ëŒ€ë¡œ ë„ë§ê°€ë©´ ì˜·ì„ ìƒëŠ”ë‹¤! \n\n";
+    scriptEx(script4, cnt1_2);
     cnt1_2++;
 
-    printf("1. ¹Ù´Ú¿¡ ±¼·¯´Ù´Ï´Â µ¹ ¾Æ¹«°Å³ª ÁÖ¿ö¼­ ÀÏ´Ü ´øÁ®º¸ÀÚ. \n");
-    printf("2. ¾Æ´Ï´Ù ÀÌ°Ç Àâ¾Æ¾ß ÇÑ´Ù! \n¿ø¼şÀÌ¸¦ ÂÑ¾Æ°£´Ù! \n");
+    printf("1. ë°”ë‹¥ì— êµ´ëŸ¬ë‹¤ë‹ˆëŠ” ëŒ ì•„ë¬´ê±°ë‚˜ ì£¼ì›Œì„œ ì¼ë‹¨ ë˜ì ¸ë³´ì. \n");
+    printf("2. ì•„ë‹ˆë‹¤ ì´ê±´ ì¡ì•„ì•¼ í•œë‹¤! ì›ìˆ­ì´ë¥¼ ì«“ì•„ê°„ë‹¤! \n");
 
     return list<char>{'1', '2'};
 }
 
-list<char> story1_2_1() //µ¹ ´øÁö´Â °æ¿ì
+list<char> story1_2_1() //ëŒ ë˜ì§€ëŠ” ê²½ìš°
 {
-    string script1 = "¸î ¹ø ´øÁ®º¸¾Ò´Âµ¥ ÇÏ´Ùµµ ¸ÂÁö ¾Ê´Ù´Ï... \n";
+    string script1 = "ëª‡ ë²ˆ ë˜ì ¸ë³´ì•˜ëŠ”ë° í•˜ë‚˜ë„ ë§ì§€ ì•Šë‹¤ë‹ˆ... \n\n";
     scriptEx(script1, cnt1_2_1);
-    string script2 = "¸¶Áö¸· ½Ãµµ... Á¶±İ ´õ ½ÅÁßÈ÷ ´øÁ®º¸ÀÚ... \n\n";
+    string script2 = "ë§ˆì§€ë§‰ ì‹œë„... ì¡°ê¸ˆ ë” ì‹ ì¤‘íˆ ë˜ì ¸ë³´ì... \n\n";
     scriptEx(script2, cnt1_2_1);
     cnt1_2_1++;
 
-    printf("1. µ¹À» ¿ŞÂÊÀ¸·Î ´øÁø´Ù. \n");
-    printf("2. µ¹À» ¿À¸¥ÂÊÀ¸·Î ´øÁø´Ù. \n");
+    printf("1. ëŒì„ ì™¼ìª½ìœ¼ë¡œ ë˜ì§„ë‹¤. \n");
+    printf("2. ëŒì„ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ë˜ì§„ë‹¤. \n");
 
     return list<char>{'1', '2'};
 }
 
-list<char> story1_2_1_1() //¿ŞÂÊÀ¸·Î ´øÁø °æ¿ì
+list<char> story1_2_1_1() //ì™¼ìª½ìœ¼ë¡œ ë˜ì§„ ê²½ìš°
 {
-    string script1 = "¿À! ÀÌ°É ¸ÂÃß´Ù´Ï! \n¿ø¼şÀÌ°¡ µåµğ¾î µ¹À» ¸Â°í ¾²·¯Á³´Ù! \n";
+    string script1 = "ì˜¤! ì´ê±¸ ë§ì¶”ë‹¤ë‹ˆ! \n\nì›ìˆ­ì´ê°€ ë“œë””ì–´ ëŒì„ ë§ê³  ì“°ëŸ¬ì¡Œë‹¤! \n\n";
     scriptEx(script1, cnt1_2_1_1);
     Sleep(SLEEP_TIME);
-    string script2 = "¹º°¡ ÀÌ»óÇÏ´Ù... \n¾îµğ¼±°¡ ¹«¸®Áö¾î ´Ş·Á¿À´Â ¼Ò¸®°¡ µé¸°´Ù. \n\n";
+    string script2 = "ë­”ê°€ ì´ìƒí•˜ë‹¤...ì–´ë””ì„ ê°€ ë¬´ë¦¬ì§€ì–´ ë‹¬ë ¤ì˜¤ëŠ” ì†Œë¦¬ê°€ ë“¤ë¦°ë‹¤. \n\n";
     scriptEx(script2, cnt1_2_1_1);
     cnt1_2_1_1++;
 
@@ -263,14 +265,14 @@ list<char> story1_2_1_1() //¿ŞÂÊÀ¸·Î ´øÁø °æ¿ì
     Sleep(SLEEP_TIME);
     printf(".\n");
     Sleep(SLEEP_TIME);
-    printf(".\n");
+    printf(".\n\n\n");
     Sleep(SLEEP_TIME);
 
-    setcolor(12, 0); //»¡°£»ö °ËÁ¤»ö
-    printf("¿ø¼şÀÌ ±º´Ü¿¡ ÀÇÇØ »ç¸ÁÇÏ¿´½À´Ï´Ù.\n");
-    setcolor(15, 0);
-    Sleep(SLEEP_TIME); //Èò»ö °ËÁ¤»ö
-    printf("¸®½ºÆù ÇÏ·Á¸é 1À» ´©¸£½Ã¿À. \n\n");
+    setColor(red, black); //ë¹¨ê°„ìƒ‰ ê²€ì •ìƒ‰
+    printf("ì›ìˆ­ì´ êµ°ë‹¨ì— ì˜í•´ ì‚¬ë§í•˜ì˜€ìŠµë‹ˆë‹¤.\n");
+    setColor(white, black);
+    Sleep(SLEEP_TIME); //í°ìƒ‰ ê²€ì •ìƒ‰
+    printf("ë¦¬ìŠ¤í° í•˜ë ¤ë©´ 1ì„ ëˆ„ë¥´ì‹œì˜¤. \n\n");
 
     /*
     int respawn;
@@ -281,9 +283,9 @@ list<char> story1_2_1_1() //¿ŞÂÊÀ¸·Î ´øÁø °æ¿ì
         return story1_2_1();
     }
     */
-    //¾Æ´Ò ¶§´Â ¾î¶»°Ô ÇÏÁö?
+    //ì•„ë‹ ë•ŒëŠ” ì–´ë–»ê²Œ í•˜ì§€?
 
-    totalscore += 100;
+    totalscore -= 100;
 
     while (keyCheckerIgnoreCase('1') == false)
     {
@@ -296,12 +298,12 @@ list<char> story1_2_1_1() //¿ŞÂÊÀ¸·Î ´øÁø °æ¿ì
     return callStoryFunc();
 }
 
-list <char> story1_2_1_2() //¿À¸¥ÂÊÀ¸·Î ´øÁø °æ¿ì
+list <char> story1_2_1_2() //ì˜¤ë¥¸ìª½ìœ¼ë¡œ ë˜ì§„ ê²½ìš°
 {
-    string script1 = "¶Ç ¸ÂÃßÁö ¸øÇÏ¿´´Ù.\n";
+    string script1 = "ë˜ ë§ì¶”ì§€ ëª»í•˜ì˜€ë‹¤.\n\n";
     scriptEx(script1, cnt1_2_1_2);
     M.Hp -= 10;
-    string script2 = "¿ÊÀ» ¾òÁö ¸øÇß°í, ³Ê¹« Ãä´Ù. ÇÇ°ïÇÏ°í ¹è°íÇÁ´Ù...\n\n";
+    string script2 = "ì˜·ì„ ì–»ì§€ ëª»í–ˆê³ , ë„ˆë¬´ ì¶¥ë‹¤...í”¼ê³¤í•˜ê³  ë°°ê³ í”„ë‹¤...\n\n";
     scriptEx(script2, cnt1_2_1_2);
     cnt1_2_1_2++;
 
@@ -311,12 +313,12 @@ list <char> story1_2_1_2() //¿À¸¥ÂÊÀ¸·Î ´øÁø °æ¿ì
     return callStoryFunc();
 }
 
-list<char> story1_2_2() //ÂÑ¾Æ°¡´Â °æ¿ì
+list<char> story1_2_2() //ì«“ì•„ê°€ëŠ” ê²½ìš°
 {
-    string script1 = "Çä..Çä..Çä... \n\n";
+    string script1 = "í—‰..í—‰..í—‰... \n\n";
     scriptEx(script1, cnt1_2_2);
     M.Hp -= 10;
-    string script2 = "¿ø¼şÀÌ¸¦ ÀâÁö ¸øÇÏ¿´´Ù. Ã¼·Â ¼Ò¸ğ°¡ ³Ê¹« ÄÇ³ªº¸´Ù... ¹è°¡ °íÇÁ´Ù. \n\n";
+    string script2 = "ì›ìˆ­ì´ë¥¼ ì¡ì§€ ëª»í•˜ì˜€ë‹¤. ì²´ë ¥ ì†Œëª¨ê°€ ë„ˆë¬´ ì»¸ë‚˜ë³´ë‹¤... ë°°ê°€ ê³ í”„ë‹¤. \n\n";
     scriptEx(script2, cnt1_2_2);
     cnt1_2_2++;
 
@@ -326,27 +328,27 @@ list<char> story1_2_2() //ÂÑ¾Æ°¡´Â °æ¿ì
     return callStoryFunc();
 }
 
-list<char> story2() //¿ÊÀ» ¸»¸®Áö ¸øÇÏ´Â °æ¿ì
+list<char> story2() //ì˜·ì„ ë§ë¦¬ì§€ ëª»í•˜ëŠ” ê²½ìš°
 {
-    M.Hp -= 10;
-    string script1 = "¿ÊÀ» ¸»¸®Áö ¸øÇØ ³Ê¹« Ãä´Ù. \n";
+    M.Hp -= 20;
+    string script1 = "ì˜·ì„ ë§ë¦¬ì§€ ëª»í•´ ë„ˆë¬´ ì¶¥ë‹¤. \n\n";
     scriptEx(script1, cnt2);
-    string script2 = "¾îµÎ¿öÁö¸é Ã¼¿Âµµ ´õ ¶³¾îÁú °Í °°´Ù. \nºû°ú Ã¼¿Â À¯Áö¸¦ À§ÇØ ¾î¼­ ºÒÀÌ¶óµµ ÇÇ¿ö¾ß ÇÒ °Í °°´Ù. \n\n";
+    string script2 = "ì–´ë‘ì›Œì§€ë©´ ì²´ì˜¨ë„ ë” ë–¨ì–´ì§ˆ ê²ƒ ê°™ë‹¤. \nì²´ì˜¨ ìœ ì§€ë¥¼ ìœ„í•´ ì–´ì„œ ë¶ˆì´ë¼ë„ í”¼ì›Œì•¼ í•  ê²ƒ ê°™ë‹¤. \n\n";
     scriptEx(script2, cnt2);
-    string script3 = "³»°¡ °¡Áø °Íµé Áß ÇÏ³ª¸¦ È°¿ëÇØº¸ÀÚ. \n";
+    string script3 = "ë‚´ê°€ ê°€ì§„ ê²ƒë“¤ ì¤‘ í•˜ë‚˜ë¥¼ í™œìš©í•´ë³´ì. \n";
     scriptEx(script3, cnt2);
     cnt2++;
 
     return list<char>{};
 }
 
-list<char> story2_1() // ÀÎº¥Åä¸®¿¡¼­ ºÎ½Ëµ¹ »ç¿ë
+list<char> story2_1() // ì¸ë²¤í† ë¦¬ì—ì„œ ë¶€ì‹¯ëŒ ì‚¬ìš©
 {
-    string script1 = "ÁÖº¯¿¡ ºÎ½Ëµ¹·Î ¾µ¸¸ÇÑ µ¹ÀÌ Á¶±İ º¸ÀÎ´Ù. \n";
+    string script1 = "ì£¼ë³€ì— ë¶€ì‹¯ëŒë¡œ ì“¸ë§Œí•œ ëŒì´ ì¡°ê¸ˆ ë³´ì¸ë‹¤. \n";
     scriptEx(script1, cnt2_1);
-    string script2 = "»ı°¢º¸´Ù ºÎ½Ëµ¹·Î ºÒÀ» ºÙÀÌ´Â °Ç ½¬¿î ÀÏÀÌ ¾Æ´Ï´Ù.\n\n";
+    string script2 = "ìƒê°ë³´ë‹¤ ë¶€ì‹¯ëŒë¡œ ë¶ˆì„ ë¶™ì´ëŠ” ê±´ ì‰¬ìš´ ì¼ì´ ì•„ë‹ˆë‹¤.\n\n";
     scriptEx(script2, cnt2_1);
-    string script3 = "´ú...´ú...´ú... ³Ê¹« Ãä´Ù... ÀÌ´ë·Î...\n";
+    string script3 = "ëœ...ëœ...ëœ... ë„ˆë¬´ ì¶¥ë‹¤... ì´ëŒ€ë¡œ...\n";
     scriptEx(script3, cnt2_1);
     cnt2_1++;
 
@@ -354,14 +356,14 @@ list<char> story2_1() // ÀÎº¥Åä¸®¿¡¼­ ºÎ½Ëµ¹ »ç¿ë
     Sleep(500);
     printf(".\n");
     Sleep(500);
-    printf(".\n");
+    printf(".\n\n\n");
     Sleep(500);
 
-    setcolor(11, 0); //¹ÎÆ®»ö °ËÁ¤»ö
-    printf("ÃßÀ§¿¡ ÀÇÇØ ÀúÃ¼¿ÂÁõÀ¸·Î »ç¸ÁÇÏ¿´½À´Ï´Ù.\n");
-    setcolor(15, 0); //Èò»ö °ËÁ¤»ö
+    setColor(11, 0); //ë¯¼íŠ¸ìƒ‰ ê²€ì •ìƒ‰
+    printf("ì¶”ìœ„ì— ì˜í•´ ì €ì²´ì˜¨ì¦ìœ¼ë¡œ ì‚¬ë§í•˜ì˜€ìŠµë‹ˆë‹¤.\n");
+    setColor(white, black); //í°ìƒ‰ ê²€ì •ìƒ‰
     Sleep(SLEEP_TIME);
-    printf("¸®½ºÆù ÇÏ·Á¸é 1À» ´©¸£½Ã¿À. \n\n");
+    printf("ë¦¬ìŠ¤í° í•˜ë ¤ë©´ 1ì„ ëˆ„ë¥´ì‹œì˜¤. \n\n");
     /*
     int n;
     scanf("%d", &n);
@@ -371,9 +373,9 @@ list<char> story2_1() // ÀÎº¥Åä¸®¿¡¼­ ºÎ½Ëµ¹ »ç¿ë
         story1_2_1();
     }
     */
-    //¾Æ´Ò ¶§´Â ¾î¶»°Ô ÇÏÁö?
+    //ì•„ë‹ ë•ŒëŠ” ì–´ë–»ê²Œ í•˜ì§€?
 
-    totalscore += 100;
+    totalscore -= 100;
 
     while (keyCheckerIgnoreCase('1') == false)
     {
@@ -385,11 +387,12 @@ list<char> story2_1() // ÀÎº¥Åä¸®¿¡¼­ ºÎ½Ëµ¹ »ç¿ë
     return story2();
 }
 
-list<char> story2_2() // ÀÎº¥Åä¸®¿¡¼­ ¾È°æ »ç¿ë
+list<char> story2_2() // ì¸ë²¤í† ë¦¬ì—ì„œ ì•ˆê²½ ì‚¬ìš©
 {
-    string script1 = "ºÒÀ» ºÙÀÌ´Â µ¥ ¼º°øÇÏ¿´´Ù. \n\n";
+    M.Hp += 10;
+    string script1 = "ë¶ˆì„ ë¶™ì´ëŠ” ë° ì„±ê³µí•˜ì˜€ë‹¤. \n\n";
     scriptEx(script1, cnt2_2);
-    string script2 = "¸öÀÌ µû¶æÇØÁö´Ï ¹è°¡ °íÆÄÁö±â ½ÃÀÛÇß´Ù. \n\n";
+    string script2 = "ëª¸ì´ ë”°ëœ»í•´ì§€ë‹ˆ ë°°ê°€ ê³ íŒŒì§€ê¸° ì‹œì‘í•œë‹¤. \n\n";
     scriptEx(script2, cnt2_2);
 
     Sleep(SLEEP_TIME);
@@ -401,111 +404,163 @@ list<char> story2_2() // ÀÎº¥Åä¸®¿¡¼­ ¾È°æ »ç¿ë
 
 list<char> story3()
 {
-    string script1 = "Ã¼·ÂÀÌ ´õ ¶³¾îÁö±â Àü¿¡ »¡¸® ¸ÔÀ» °ÍÀ» ±¸ÇØ¾ß°Ú´Ù. \n\n";
+    string script1 = "ì²´ë ¥ì´ ë” ë–¨ì–´ì§€ê¸° ì „ì— ë¹¨ë¦¬ ë¨¹ì„ ê²ƒì„ êµ¬í•´ì•¼ê² ë‹¤. \n\n";
     scriptEx(script1, cnt3);
-    string script2 = "ÀÌµ¿ÇÒ ¼ö ÀÖÀ»¸¸ÇÑ Àå¼Ò°¡ ÃÑ 3°³ Á¤µµ º¸ÀÎ´Ù. \n\n";
+    string script2 = "ì´ë™í•  ìˆ˜ ìˆì„ë§Œí•œ ì¥ì†Œê°€ ì´ 3ê°œ ì •ë„ ë³´ì¸ë‹¤. \n\n";
     scriptEx(script2, cnt3);
     cnt3++;
 
-    printf("1. ¹°°í±â°¡ ÆÄ´ÚÆÄ´Ú ¹Ù´Ù·Î ÀÌµ¿ÇØº»´Ù. \n");
-    printf("2. Àú ³ôÀÌ º¸ÀÌ´Â ÆøÆ÷ ¾Æ·¡ ÀÖÀ» ¹ıÇÑ °­À¸·Î ÀÌµ¿ÇØº»´Ù. \n");
-    printf("3. Áü½ÂµéÀÌ ¼û¾îÀÖÀ» ¹ıÇÑ ¹ĞÁıÇÑ ½£À¸·Î ÀÌµ¿ÇØº»´Ù. \n");
+    printf("1. ë¬¼ê³ ê¸°ê°€ íŒŒë‹¥íŒŒë‹¥ ë°”ë‹¤ë¡œ ì´ë™í•´ë³¸ë‹¤. \n");
+    printf("2. ì € ë†’ì´ ë³´ì´ëŠ” í­í¬ ì•„ë˜ ìˆì„ ë²•í•œ ê°•ìœ¼ë¡œ ì´ë™í•´ë³¸ë‹¤. \n");
+    printf("3. ì§ìŠ¹ë“¤ì´ ìˆ¨ì–´ìˆì„ ë²•í•œ ë°€ì§‘í•œ ìˆ²ìœ¼ë¡œ ì´ë™í•´ë³¸ë‹¤. \n");
 
     return list<char>{'1', '2', '3'};
 }
 
 list<char> story3_1()
 {
-    string script1 = "¾î´À»õ ¹Ù´Ù·Î ¿Ô´Ù. µå³ĞÀº ¹Ù´Ù¸¦ º¸´Ï °ú¿¬ ÀÌ °÷À» ºüÁ®³ª°¥ ¼ö ÀÖÀ»Áö ¸·¸·ÇÏ´Ù. \n";
+    int x;
+    string script1 = "ì–´ëŠìƒˆ ë°”ë‹¤ë¡œ ì™”ë‹¤. ë“œë„“ì€ ë°”ë‹¤ë¥¼ ë³´ë‹ˆ ê³¼ì—° ì´ ê³³ì„ ë¹ ì ¸ë‚˜ê°ˆ ìˆ˜ ìˆì„ì§€ ë§‰ë§‰í•˜ë‹¤. \n";
     scriptEx(script1, cnt3_1);
-    string script2 = "¹Ù´å¹° ¾Æ·¡ ¹°°í±â·Î ÃßÁ¤µÇ´Â ±×¸²ÀÚµéÀÌ Áö³ª°¡´Â °ÍÀÌ º¸ÀÎ´Ù. \n\n";
+    string script2 = "ë°”ë‹·ë¬¼ ì•„ë˜ ë¬¼ê³ ê¸°ë¡œ ì¶”ì •ë˜ëŠ” ê·¸ë¦¼ìë“¤ì´ ì§€ë‚˜ê°€ëŠ” ê²ƒì´ ë³´ì¸ë‹¤. \n\n";
     scriptEx(script2, cnt3_1);
-    string script3 = "¸ğ·¡»çÀå ±ÙÃ³ ¶³¾îÁø ³°Àº ³¬½Ã´ë°¡ º¸ÀÎ´Ù. \n\n";
+    string script3 = "ëª¨ë˜ì‚¬ì¥ ê·¼ì²˜ ë–¨ì–´ì§„ ë‚¡ì€ ë‚šì‹œëŒ€ê°€ ë³´ì¸ë‹¤. \n\n";
     scriptEx(script3, cnt3_1);
-    string script4 = "¾î¼­ ¹°°í±â¸¦ Àâ¾Æº¸ÀÚ!\n\n\n";
+    string script4 = "ì–´ì„œ ë¬¼ê³ ê¸°ë¥¼ ì¡ì•„ë³´ì!\n\n\n";
     scriptEx(script4, cnt3_1);
     cnt3_1++;
 
-    setcolor(14, 0);
-    printf("----------------¹°°í±â¸¦ Àâ¾Æ¶ó! minigame Æ©Åä¸®¾ó----------------\n\n");
-    printf("Á¦½ÃµÇ´Â ´Ù¼¸ °³ÀÇ ¼ıÀÚ 1, 2, 3, 4, 5 Áß ÇÏ³ª¸¦ ·£´ıÀ¸·Î ¼±ÅÃÇÑ´Ù. \n");
+    setColor(yellow, black);
+    printf("----------------ë¬¼ê³ ê¸°ë¥¼ ì¡ì•„ë¼! minigame íŠœí† ë¦¬ì–¼----------------\n\n");
+    printf("ì œì‹œë˜ëŠ” ë‹¤ì„¯ ê°œì˜ ìˆ«ì 1, 2, 3, 4, 5 ì¤‘ í•˜ë‚˜ë¥¼ ëœë¤ìœ¼ë¡œ ì„ íƒí•œë‹¤. \n");
     Sleep(SLEEP_TIME);
-    printf("    5°³ÀÇ ¼ıÀÚ Áß ¾î¶² ¹°°í±â, È¤Àº ¾î¶² °á°ú°¡ ³ª¿ÃÁö´Â ¸ğ¸¥´Ù. \n");
+    printf("    5ê°œì˜ ìˆ«ì ì¤‘ ì–´ë–¤ ë¬¼ê³ ê¸°, í˜¹ì€ ì–´ë–¤ ê²°ê³¼ê°€ ë‚˜ì˜¬ì§€ëŠ” ëª¨ë¥¸ë‹¤. \n");
     Sleep(SLEEP_TIME);
-    printf("                    ±×·³, Çà¿îÀ» ºó´Ù. \n\n");
+    printf("                    ê·¸ëŸ¼, í–‰ìš´ì„ ë¹ˆë‹¤. \n\n");
     printf("-------------------------------------------------------------------\n\n");
 
+    Sleep(2000);
+    printf("ê³„ì†í•˜ë ¤ë©´ 1ì„ ëˆ„ë¥´ì‹œì˜¤. \n\n");
+    setColor(white, black);
+    /*
+    int n;
+    scanf("%d", &n);
+
+    if (n == 1)
+    {
+        story1_2_1();
+    }
+    */
+    //ì•„ë‹ ë•ŒëŠ” ì–´ë–»ê²Œ í•˜ì§€?
+
+    totalscore -= 100;
+
+    while (keyCheckerIgnoreCase('1') == false)
+    {
+        Sleep(100);
+    }
+ 
     pushStoryPath('m');
     return callStoryFunc();
 }
 
-list<char> story3_1_m() //¹°°í±â ¹Ì´Ï°ÔÀÓ
+int cnt_jellyfish = 0; // í•´íŒŒë¦¬ë¥¼ ë‚šëŠ” íšŸìˆ˜
+
+list<char> story3_1_m() //ë¬¼ê³ ê¸° ë¯¸ë‹ˆê²Œì„
 {
     string script1 = "1    2    3    4    5 \n\n";
     scriptEx(script1, cnt3_1_m);
     cnt3_1_m++;
 
-    return list<char>{'1', '2', '3', '4', '5'};
+
+    int key = pressedKey();
+    if (key == '1' || key == '2' || key == '3' || key == '4' || key == '5')
+    {
+        char random = NULL;
+        srand((unsigned int)time(NULL));  // seedê°’ìœ¼ë¡œ í˜„ì¬ ì‹œê°„ ë¶€ì—¬
+        random = rand() % 4 + '0'; // ë‚œìˆ˜ ë²”ìœ„ '0'~'3'ìœ¼ë¡œ í•œì •
+        while (random == '0' && cnt_jellyfish != 0) // í•´íŒŒë¦¬ë¥¼ ë‚šì„ ë•Œ ì´ë¯¸ ì´ì „ì— í•œ ë²ˆ ì´ìƒ ë‚šì•˜ë‹¤ë©´ ë‚œìˆ˜ë¥¼ ë‹¤ì‹œ ìƒì„±í•œë‹¤
+            random = rand() % 4 + '0';
+        pushStoryPath(random);
+
+    }
+    return callStoryFunc();
+
+}
+
+
+
+int cnt_fish[4] = { 0, 2, 2, 2 }; // ìŠ¤í† ë¦¬ ë°˜ë³µ íšŸìˆ˜-1
+
+list<char> story3_1_m_0()
+{
+    string script1 = "í•´íŒŒë¦¬ë¥¼ ë‚šì•„ë²„ë ¸ë‹¤! ìœ¼ì•…! \n\n\n";
+    scriptEx(script1);
+
+    setColor(yellow, black);
+    printf("í•´íŒŒë¦¬ì— ì˜í•´ ê°ì „ë‹¹í•´ ì‚¬ë§í•˜ì˜€ìŠµë‹ˆë‹¤. \n\n");
+
+    totalscore -= 100;
+    cnt_jellyfish++;
+
+    popStoryPath();
+    popStoryPath();
+    popStoryPath();
+    return callStoryFunc();
 }
 
 list<char> story3_1_m_1()
 {
-    string script1 = "ÇØÆÄ¸®¸¦ ³¬¾Æ¹ö·È´Ù! À¸¾Ç! \n\n\n";
-    scriptEx(script1, cnt3_1_m_1);
-    cnt3_1_m_1++;
+    string script1 = "ì‘? ì™œ ë‚šì‹œì¤„ì— ëŒë©©ì´ê°€ ì´ëŒë ¤ ë‚˜ì˜¤ì§€..? ë‚´ ì‹¤ë ¥ì´ ë¶€ë„ëŸ½ë‹¤. \n";
+    scriptEx(script1);
+    M.Hp -= 10;
 
-    setcolor(14, 0);
-    printf("ÇØÆÄ¸®¿¡ ÀÇÇØ °¨Àü´çÇØ »ç¸ÁÇÏ¿´½À´Ï´Ù. \n\n");
+    while (cnt_fish[1]--) // ë¬¼ê³ ê¸°ë¥¼ ì¡ì€ íšŸìˆ˜ê°€ 2ë²ˆ ì´í•˜ì´ë©´
+    {
+        // ë¬¼ê³ ê¸° ë¯¸ë‹ˆê²Œì„ì„ ë‹¤ì‹œ í•œë‹¤
+        popStoryPath(); 
+        return callStoryFunc();
 
-    totalscore += 100;
+    }
+    
 
-    popStoryPath();
+    rebuildStoryPath(list<char>{'3', '1', 'e'});
     return callStoryFunc();
 }
 
 list<char> story3_1_m_2()
 {
-    string script1 = "³ÒÄ¡¸¦ ³¬¾Ò´Ù! ÀÌ°É·Î ³¢´Ï ÇØ°áÀº °¡´ÉÇÏ°Ú±º! \n";
-    scriptEx(script1, cnt3_1_m_2);
-    M.Hp += 10;
-    cnt3_1_m_2++;
+    string script1 = "ë„™ì¹˜ë¥¼ ë‚šì•˜ë‹¤! ì´ê±¸ë¡œ ë¼ë‹ˆ í•´ê²°ì€ ê°€ëŠ¥í•˜ê² êµ°! \n";
+    scriptEx(script1);
+    M.Hp += 5;
+
+    while (cnt_fish[1]--) // ë¬¼ê³ ê¸°ë¥¼ ì¡ì€ íšŸìˆ˜ê°€ 2ë²ˆ ì´í•˜ì´ë©´
+    {
+        // ë¬¼ê³ ê¸° ë¯¸ë‹ˆê²Œì„ì„ ë‹¤ì‹œ í•œë‹¤
+        popStoryPath();
+        return callStoryFunc();
+
+    }
 
     rebuildStoryPath(list<char>{'3', '1', 'e'});
     return callStoryFunc();
 }
+
+
 
 list<char> story3_1_m_3()
 {
-    string script1 = "ÀÀ? ¿Ö ³¬½ÃÁÙ¿¡ µ¹¸æÀÌ°¡ ÀÌ²ø·Á ³ª¿ÀÁö..? ³» ½Ç·ÂÀÌ ºÎ²ô·´´Ù. \n";
-    scriptEx(script1, cnt3_1_m_3);
-    cnt3_1_m_3++;
-    M.Hp -= 10;
-
-    rebuildStoryPath(list<char>{'3', '1', 'e'});
-    return callStoryFunc();
-}
-
-list<char> story3_1_m_4()
-{
-    string script1 = "ÇØÆÄ¸®¸¦ ³¬¾Æ¹ö·È´Ù! À¸¾Ç! \n\n\n";
-    scriptEx(script1, cnt3_1_m_1);
-    cnt3_1_m_1++;
-
-    setcolor(14, 0);
-    printf("ÇØÆÄ¸®¿¡ ÀÇÇØ °¨Àü´çÇØ »ç¸ÁÇÏ¿´½À´Ï´Ù. \n\n");
-
-    totalscore += 100;
-
-    popStoryPath();
-    return callStoryFunc();
-}
-
-list<char> story3_1_m_5()
-{
-    string script1 = "¼Û¾î¸¦ ³¬¾Ò´Ù! ÀÌ°É·Î ³¢´Ï ÇØ°áÀº °¡´ÉÇÏ°Ú±º! \n\n\n";
-    scriptEx(script1, cnt3_1_m_5);
+    string script1 = "ì†¡ì–´ë¥¼ ë‚šì•˜ë‹¤! ì´ê±¸ë¡œ ë¼ë‹ˆ í•´ê²°ì€ ê°€ëŠ¥í•˜ê² êµ°! \n\n\n";
+    scriptEx(script1);
     M.Hp += 10;
-    cnt3_1_m_5++;
+
+    while (cnt_fish[1]--) // ë¬¼ê³ ê¸°ë¥¼ ì¡ì€ íšŸìˆ˜ê°€ 2ë²ˆ ì´í•˜ì´ë©´
+    {
+        // ë¬¼ê³ ê¸° ë¯¸ë‹ˆê²Œì„ì„ ë‹¤ì‹œ í•œë‹¤
+        popStoryPath();
+        return callStoryFunc();
+
+    }
 
     rebuildStoryPath(list<char>{'3', '1', 'e'});
     return callStoryFunc();
@@ -513,34 +568,34 @@ list<char> story3_1_m_5()
 
 list<char> story3_1_e()
 {
-    string script1 = "¹Ù´Ù ÁÖº¯À» Á¶±İ¾¿ °ÉÀ¸¸ç ³»°¡ ÇÊ¿äÇÑ °ÍµéÀ» ÁÖ¿ü´Ù. \n\n";
+    string script1 = "ë°”ë‹¤ ì£¼ë³€ì„ ì¡°ê¸ˆì”© ê±¸ìœ¼ë©° ë‚´ê°€ í•„ìš”í•œ ê²ƒë“¤ì„ ì£¼ì› ë‹¤. \n\n";
     scriptEx(script1, cnt3_1_e_1);
-    string script2 = "ºó Äµ, ³ì½¼ Ã¶Á¦, ´Ù ÇìÁø ±×¹°¸Á... \n\n";
+    string script2 = "ë¹ˆ ìº”, ë…¹ìŠ¨ ì² ì œ, ë‹¤ í—¤ì§„ ê·¸ë¬¼ë§... \n\n";
     scriptEx(script2, cnt3_1_e_1);
-    string script3 = "Àá±ñ...\n";
+    string script3 = "ì ê¹...\n";
     scriptEx(script3, cnt3_1_e_1);
-    string script4 = "Àá±ñ...\n\n";
+    string script4 = "ì ê¹...\n\n";
     scriptEx(script4, cnt3_1_e_1);
-    string script5 = "Àú±â ¸ğ·¡»çÀå ±ÙÃ³ ¶Â¸ñÀÌ Èñ¸¶ÇÏ°Ô º¸¿´´Ù. \n\n";
+    string script5 = "ì €ê¸° ëª¨ë˜ì‚¬ì¥ ê·¼ì²˜ ë—ëª©ì´ í¬ë¯¸í•˜ê²Œ ë³´ì˜€ë‹¤. \n\n";
     scriptEx(script5, cnt3_1_e_1);
-    string script6 = "°¡±îÀÌ ´Ù°¡°¡´Ï ¶Â¸ñÀÌ È®½ÇÇß´Ù. »óÅÂ°¡ ¸¹ÀÌ ÁÁÁö´Â ¾Ê¾ÒÁö¸¸ ±×·¡µµ ¾µ¸¸ÇØ º¸¿´´Ù. \n\n";
+    string script6 = "ê°€ê¹Œì´ ë‹¤ê°€ê°€ë‹ˆ ë—ëª©ì´ í™•ì‹¤í–ˆë‹¤. ìƒíƒœê°€ ë§ì´ ì¢‹ì§€ëŠ” ì•Šì•˜ì§€ë§Œ ê·¸ë˜ë„ ì“¸ë§Œí•´ ë³´ì˜€ë‹¤. \n\n";
     scriptEx(script6, cnt3_1_e_1);
-    string script7 = "ÀÌ·± ¶Â¸ñÀÌ ±×³É ¼¶¿¡ ¹«ÀÛÀ§ÇÏ°Ô ³Î·ÁÀÖÀ»¸®°¡ ¾ø´Ù. \n\n";
+    string script7 = "ì´ëŸ° ë—ëª©ì´ ê·¸ëƒ¥ ì„¬ì— ë¬´ì‘ìœ„í•˜ê²Œ ë„ë ¤ìˆì„ë¦¬ê°€ ì—†ë‹¤. \n\n";
     scriptEx(script7, cnt3_1_e_1);
 
-    printf("1. ÀÌ ¼¶¿¡ ³ª¿Í °°Àº ´Ù¸¥ ´©±º°¡°¡ ¸¸µç °ÍÀÏ ¼ö ÀÖ´Ù. ÇÔºÎ·Î °¡Á®°¡¼­´Â ¾ÈµÈ´Ù. \n");
-    printf("2. ´©±¸ °ÍÀÌ°í ¾Æ´Ñ°Ô ¾îµø¾î? Áö±İ °¡Á®°¡´Â »ç¶÷ÀÌ ÀÓÀÚ´Ù. ÀÌ ¼¶¿¡ ´õ ÀÖ´Ù°¡´Â ³»°¡ Á×´Â´Ù. \n");
+    printf("1. ì´ ì„¬ì— ë‚˜ì™€ ê°™ì€ ë‹¤ë¥¸ ëˆ„êµ°ê°€ê°€ ë§Œë“  ê²ƒì¼ ìˆ˜ ìˆë‹¤. í•¨ë¶€ë¡œ ê°€ì ¸ê°€ì„œëŠ” ì•ˆëœë‹¤. \n");
+    printf("2. ëˆ„êµ¬ ê²ƒì´ê³  ì•„ë‹Œê²Œ ì–´ë”¨ì–´? ì§€ê¸ˆ ê°€ì ¸ê°€ëŠ” ì‚¬ëŒì´ ì„ìë‹¤. ì´ ì„¬ì— ë” ìˆë‹¤ê°€ëŠ” ë‚´ê°€ ì£½ëŠ”ë‹¤. \n");
 
     return list<char>{'1', '2'};
 }
 
-list<char> story3_1_e_1() //¹è ÈÉÄ¡Áö ¾ÊÀº °æ¿ì
+list<char> story3_1_e_1() //ë°° í›”ì¹˜ì§€ ì•Šì€ ê²½ìš°
 {
-    string script1 = "¾Æ½¬¿òÀ» ÇÑ °¡µæ ³²±äÃ¤ ¶Â¸ñÀ» ±×³É µÎ¾ú´Ù. \n\n";
+    string script1 = "ì•„ì‰¬ì›€ì„ í•œ ê°€ë“ ë‚¨ê¸´ì±„ ë—ëª©ì„ ê·¸ëƒ¥ ë‘ì—ˆë‹¤. \n\n";
     scriptEx(script1, cnt3_1_e_1_1);
-    string script2 = "ÁÖÀÎÀÌ ¿Ã ¶§±îÁö ±â´Ù·Áº¸´Â °Íµµ ¹æ¹ıÀÌ´Ù. \n\n";
+    string script2 = "ì£¼ì¸ì´ ì˜¬ ë•Œê¹Œì§€ ê¸°ë‹¤ë ¤ë³´ëŠ” ê²ƒë„ ë°©ë²•ì´ë‹¤. \n\n";
     scriptEx(script2, cnt3_1_e_1_1);
-    string script3 = "¶Â¸ñ¿¡ ¾É¾Æ ÁÖÀÎÀ» ÇÏ¿°¾øÀÌ °è¼Ó ±â´Ù·È´Ù. \n\n";
+    string script3 = "ë—ëª©ì— ì•‰ì•„ ì£¼ì¸ì„ í•˜ì—¼ì—†ì´ ê³„ì† ê¸°ë‹¤ë ¸ë‹¤. \n\n";
     scriptEx(script3, cnt3_1_e_1_1);
 
     printf(".\n");
@@ -549,38 +604,38 @@ list<char> story3_1_e_1() //¹è ÈÉÄ¡Áö ¾ÊÀº °æ¿ì
     Sleep(SLEEP_TIME);
     printf(".\n");
 
-    setcolor(10, 0);
-    string script4 = "[??] : Àú±â...Àú±â...\n\n";
+    setColor(10, 0);
+    string script4 = "[??] : ì €ê¸°...ì €ê¸°...\n\n";
     scriptEx(script4, cnt3_1_e_1_1);
-    setcolor(15, 0);
-    string script5 = "´©±º°¡ ³ª¸¦ Èçµé¾î±ú¿ü´Ù. ´«À» ±ôºı°Å¸®¸é¼­ ÀÏ¾î³µ´Ù. \n\n";
+    setColor(white, black);
+    string script5 = "ëˆ„êµ°ê°€ ë‚˜ë¥¼ í”ë“¤ì–´ê¹¨ì› ë‹¤. ëˆˆì„ ê¹œë¹¡ê±°ë¦¬ë©´ì„œ ì¼ì–´ë‚¬ë‹¤. \n\n";
     scriptEx(script5, cnt3_1_e_1_1);
-    setcolor(15, 0);
-    string script6 = "[??] : ÀÌ°Å Á¦ ¶Â¸ñÀÎµ¥... \n\n";
+    setColor(white, black);
+    string script6 = "[??] : ì´ê±° ì œ ë—ëª©ì¸ë°... \n\n";
     scriptEx(script6, cnt3_1_e_1_1);
     cnt3_1_e_1_1++;
 
-    printf("1. ³×, Àúµµ ¾Ğ´Ï´Ù! È¤½Ã °°ÀÌ Å»ÃâÇÏ½Ç ¼ö...ÀÖÀ»±î¿ä?\n");
-    printf("2. ¾Æ´Ñµ¥¿ä? ÀÌ°Å Á¦°¡ ¸¸µé¾ú´Âµ¥¿ä? \n");
+    printf("1. ë„¤, ì €ë„ ì••ë‹ˆë‹¤! í˜¹ì‹œ ê°™ì´ íƒˆì¶œí•˜ì‹¤ ìˆ˜...ìˆì„ê¹Œìš”?\n");
+    printf("2. ì•„ë‹Œë°ìš”? ì´ê±° ì œê°€ ë§Œë“¤ì—ˆëŠ”ë°ìš”? \n");
 
     return list<char>{'1', '2'};
 }
 
-list<char>story3_1_e_1_1() //ÇÔ²² Å¸°í °¡¾ßÇÏ´Â ¿£µù
+list<char>story3_1_e_1_1() //í•¨ê»˜ íƒ€ê³  ê°€ì•¼í•˜ëŠ” ì—”ë”©
 {
-    setcolor(10, 0);
-    string script1 = "[??] : ±×·³ °°ÀÌ °¡½ÃÁÒ! »¡¸® Å»ÃâÇÕ½Ã´Ù! \n\n";
+    setColor(10, 0);
+    string script1 = "[??] : ê·¸ëŸ¼ ê°™ì´ ê°€ì‹œì£ ! ë¹¨ë¦¬ íƒˆì¶œí•©ì‹œë‹¤! \n\n";
     scriptEx(script1, cnt3_1_e_1_1_1);
-    setcolor(15, 0);
-    string script2 = "±×·¸°Ô ³ª´Â ±×¿Í ÇÔ²² ¶Â¸ñÀ» Å¸°í ¹Ù´Ù¸¦ °Ç³Ê±â ½ÃÀÛÇÏ¿´´Ù. \n\n";
+    setColor(white, black);
+    string script2 = "ê·¸ë ‡ê²Œ ë‚˜ëŠ” ê·¸ì™€ í•¨ê»˜ ë—ëª©ì„ íƒ€ê³  ë°”ë‹¤ë¥¼ ê±´ë„ˆê¸° ì‹œì‘í•˜ì˜€ë‹¤. \n\n";
     scriptEx(script2, cnt3_1_e_1_1_1);
-    string script3 = "¿À·£ ½Ã°£ ÀÌµ¿ÇÏ¸é¼­ ±×°¡ °¡Áø ½Ä·®À» ³ª´²¸Ô¾ú´Ù. \n\n";
+    string script3 = "ì˜¤ëœ ì‹œê°„ ì´ë™í•˜ë©´ì„œ ê·¸ê°€ ê°€ì§„ ì‹ëŸ‰ì„ ë‚˜ëˆ ë¨¹ì—ˆë‹¤. \n\n";
     scriptEx(script3, cnt3_1_e_1_1_1);
-    string script4 = "¶Â¸ñÀ» Å¸°í ³¡ÀÌ º¸ÀÌÁö ¾Ê´Â ¹Ù´Ù¸¦ Ç×ÇØÇÏ¸ç ±× ÀÌ°¡ ¾îÂ¼´Ù ÀÌ ¼¶¿¡ °¤Çû´ÂÁöµµ µè°Ô µÇ¾ú´Ù. \n\n";
+    string script4 = "ë—ëª©ì„ íƒ€ê³  ëì´ ë³´ì´ì§€ ì•ŠëŠ” ë°”ë‹¤ë¥¼ í•­í•´í•˜ë©° ê·¸ ì´ê°€ ì–´ì©Œë‹¤ ì´ ì„¬ì— ê°‡í˜”ëŠ”ì§€ë„ ë“£ê²Œ ë˜ì—ˆë‹¤. \n\n";
     scriptEx(script4, cnt3_1_e_1_1_1);
-    string script5 = "È®½ÇÇÑ °Ç. ³­ Á¤¸» ¿îÀÌ ÁÁÀº °ÍÀÌ¶ó´Â °Å´Ù. \n\n";
+    string script5 = "í™•ì‹¤í•œ ê±´. ë‚œ ì •ë§ ìš´ì´ ì¢‹ì€ ê²ƒì´ë¼ëŠ” ê±°ë‹¤. \n\n";
     scriptEx(script5, cnt3_1_e_1_1_1);
-    string script6 = "±×°¡ ¶Â¸ñ±îÁö ¸¸µé¾î¾ß Çß´ø ½Ã°£¿¡ ºñÇÏ¸é Á¤¸» »¡¸® ÀÌ ¼¶À» Å»ÃâÇÏ°Ô µÇ¾úÀ¸´Ï...\n\n";
+    string script6 = "ê·¸ê°€ ë—ëª©ê¹Œì§€ ë§Œë“¤ì–´ì•¼ í–ˆë˜ ì‹œê°„ì— ë¹„í•˜ë©´ ì •ë§ ë¹¨ë¦¬ ì´ ì„¬ì„ íƒˆì¶œí•˜ê²Œ ë˜ì—ˆìœ¼ë‹ˆ...\n\n";
     scriptEx(script6, cnt3_1_e_1_1_1);
 
 
@@ -590,33 +645,33 @@ list<char>story3_1_e_1_1() //ÇÔ²² Å¸°í °¡¾ßÇÏ´Â ¿£µù
     Sleep(SLEEP_TIME);
     printf(".\n");
 
-    string script7 = "±ä ½Ã°£ÀÌ Áö³µ°í ¿ì¸®´Â ¿îÀÌ ÁÁ°Ô ±¸Á¶ Çï±â¸¦ ¹ß°ßÇß´Ù. \n\n";
+    string script7 = "ê¸´ ì‹œê°„ì´ ì§€ë‚¬ê³  ìš°ë¦¬ëŠ” ìš´ì´ ì¢‹ê²Œ êµ¬ì¡° í—¬ê¸°ë¥¼ ë°œê²¬í–ˆë‹¤. \n\n";
     scriptEx(script7, cnt3_1_e_1_1_1);
-    string script8 = "¿­½ÉÈ÷ ±¸Á¶¿äÃ»À» ÇÑ ³¡¿¡ ³Ê¹«³ª ´ÙÇàÈ÷ ¿ì¸®´Â ¾ÈÀüÈ÷ ±¸Á¶µÇ¾ú°í \n";
+    string script8 = "ì—´ì‹¬íˆ êµ¬ì¡°ìš”ì²­ì„ í•œ ëì— ë„ˆë¬´ë‚˜ ë‹¤í–‰íˆ ìš°ë¦¬ëŠ” ì•ˆì „íˆ êµ¬ì¡°ë˜ì—ˆê³  \n";
     scriptEx(script8, cnt3_1_e_1_1_1);
-    string script9 = "¿ì¸®ÀÇ ÀÌ¾ß±â´Â ´º½º ±â»ç·Î ½Ç¸®±âµµ ÇÏ¿´´Ù. \n\n";
+    string script9 = "ìš°ë¦¬ì˜ ì´ì•¼ê¸°ëŠ” ë‰´ìŠ¤ ê¸°ì‚¬ë¡œ ì‹¤ë¦¬ê¸°ë„ í•˜ì˜€ë‹¤. \n\n";
     scriptEx(script9, cnt3_1_e_1_1_1);
-    string script10 = "¸¸¾à ³»°¡ ±× ³¯ ¶Â¸ñÀ» ¹ß°ßÇÏÁö ¾Ê¾Ò´õ¶ó¸é °ú¿¬ ¾î¶² ÀÏÀÌ ÀÏ¾î³µÀ»Áö...\n\n\n";
+    string script10 = "ë§Œì•½ ë‚´ê°€ ê·¸ ë‚  ë—ëª©ì„ ë°œê²¬í•˜ì§€ ì•Šì•˜ë”ë¼ë©´ ê³¼ì—° ì–´ë–¤ ì¼ì´ ì¼ì–´ë‚¬ì„ì§€...\n\n\n";
     scriptEx(script1, cnt3_1_e_1_1_1);
 
     Sleep(SLEEP_TIME);
 
-    string script11 = "º°·Î »ó»óÇÏ°í ½ÍÁö´Â ¾Ê´Ù. \n";
+    string script11 = "ë³„ë¡œ ìƒìƒí•˜ê³  ì‹¶ì§€ëŠ” ì•Šë‹¤. \n";
     scriptEx(script11, cnt3_1_e_1_1_1);
     cnt3_1_e_1_1_1++;
 
-    setColor(14, 0);
-    printf("´Ù¸¥ ¿£µùÀÌ ±Ã±İÇÏÁö ¾ÊÀ¸½Å°¡¿ä? \n\n");
-    printf("°ÔÀÓÀ» ´Ù½Ã ÇÃ·¹ÀÌÇÏ¿© ¿©·¯ ¿£µùÀ» °æÇèÇØº¸¼¼¿ä. \n\n");
+    setColor(yellow, black);
+    printf("ë‹¤ë¥¸ ì—”ë”©ì´ ê¶ê¸ˆí•˜ì§€ ì•Šìœ¼ì‹ ê°€ìš”? \n\n");
+    printf("ê²Œì„ì„ ë‹¤ì‹œ í”Œë ˆì´í•˜ì—¬ ì—¬ëŸ¬ ì—”ë”©ì„ ê²½í—˜í•´ë³´ì„¸ìš”. \n\n");
 
     return list<char>{};
 }
 
-list<char>story3_1_e_1_2() //½ÃÄ¡¹Ì ¶¼´Â °æ¿ì
+list<char>story3_1_e_1_2() //ì‹œì¹˜ë¯¸ ë–¼ëŠ” ê²½ìš°
 {
-    string script1 = "±×°¡ ³ª¸¦ ¾îÀÇ ¾ø´Ù´ÂµíÀÌ ¶Õ¾îÁ®¶ó ÃÄ´ÙºÃ´Ù. \n\n";
+    string script1 = "ê·¸ê°€ ë‚˜ë¥¼ ì–´ì˜ ì—†ë‹¤ëŠ”ë“¯ì´ ëš«ì–´ì ¸ë¼ ì³ë‹¤ë´¤ë‹¤. \n\n";
     scriptEx(script1, cnt3_1_e_1_1_2);
-    string script2 = "¾î¼­ ¼ö½ÀÇØ¾ß Å»ÃâÇÒ ¼ö ÀÖ°Ú´Ù°í ´À³¤ ³ª´Â ºü¸£°Ô »ç°úÇÏ°í µµ¿Í´Ş¶ó°í ºÎÅ¹ÇÏ¿´´Ù. \n\n";
+    string script2 = "ì–´ì„œ ìˆ˜ìŠµí•´ì•¼ íƒˆì¶œí•  ìˆ˜ ìˆê² ë‹¤ê³  ëŠë‚€ ë‚˜ëŠ” ë¹ ë¥´ê²Œ ì‚¬ê³¼í•˜ê³  ë„ì™€ë‹¬ë¼ê³  ë¶€íƒí•˜ì˜€ë‹¤. \n\n";
     scriptEx(script2, cnt3_1_e_1_1_2);
     cnt3_1_e_1_1_2++;
 
@@ -624,19 +679,19 @@ list<char>story3_1_e_1_2() //½ÃÄ¡¹Ì ¶¼´Â °æ¿ì
     return story3_1_e_1_1();
 }
 
-list<char> story3_1_e_2() //¹è ÈÉÃÄ°£ °æ¿ì
+list<char> story3_1_e_2() //ë°° í›”ì³ê°„ ê²½ìš°
 {
-    string script1 = "ºü¸£°Ô ¶Â¸ñÀ» Ãâ¹ß½ÃÅ°±â À§ÇØ ÁØºñÇß´Ù. \n\n";
+    string script1 = "ë¹ ë¥´ê²Œ ë—ëª©ì„ ì¶œë°œì‹œí‚¤ê¸° ìœ„í•´ ì¤€ë¹„í–ˆë‹¤. \n\n";
     scriptEx(script1, cnt3_1_e_1_2);
-    string script2 = "¿·¿¡ ÀÖ´Â Åë³ª¹«ÀÇ °¡Áö¸¦ ¶â¾î ¶Â¸ñÀÇ ³ë·Î »ç¿ëÇØ¾ß°Ú´Ù. \n\n";
+    string script2 = "ì˜†ì— ìˆëŠ” í†µë‚˜ë¬´ì˜ ê°€ì§€ë¥¼ ëœ¯ì–´ ë—ëª©ì˜ ë…¸ë¡œ ì‚¬ìš©í•´ì•¼ê² ë‹¤. \n\n";
     scriptEx(script2, cnt3_1_e_1_2);
-    string script3 = "Ãâ¹ßÇÏ·Á ÇÏ´Âµ¥ Àú ¸Ö¸®¼­ ´©±º°¡ ¶Ù¾î¿Â´Ù. ¾öÃ» ºü¸£´Ù. \n\n";
+    string script3 = "ì¶œë°œí•˜ë ¤ í•˜ëŠ”ë° ì € ë©€ë¦¬ì„œ ëˆ„êµ°ê°€ ë›°ì–´ì˜¨ë‹¤. ì—„ì²­ ë¹ ë¥´ë‹¤. \n\n";
     scriptEx(script3, cnt3_1_e_1_2);
-    string script4 = "¶Â¸ñ ÁÖÀÎÀÎ°¡ º¸´Ù! Å«ÀÏÀÌ´Ù »¡¸® µµ¸ÁÃÄ¾ß ÇÑ´Ù. \n";
+    string script4 = "ë—ëª© ì£¼ì¸ì¸ê°€ ë³´ë‹¤! í°ì¼ì´ë‹¤ ë¹¨ë¦¬ ë„ë§ì³ì•¼ í•œë‹¤. \n";
     scriptEx(script4, cnt3_1_e_1_2);
-    string script5 = "³ë¸¦ Á£±â À§ÇØ °¡Áö¸¦ ¹°¿¡ ³Ö´Â ¼ø°£ ¹«¾ğ°¡ »ÏÁ·ÇÑ °ÍÀÌ ³ªÀÇ ¸ñ µÚ¸¦ °­Å¸ÇÏ¿´´Ù. \n\n";
+    string script5 = "ë…¸ë¥¼ ì “ê¸° ìœ„í•´ ê°€ì§€ë¥¼ ë¬¼ì— ë„£ëŠ” ìˆœê°„ ë¬´ì–¸ê°€ ë¾°ì¡±í•œ ê²ƒì´ ë‚˜ì˜ ëª© ë’¤ë¥¼ ê°•íƒ€í•˜ì˜€ë‹¤. \n\n";
     scriptEx(script5, cnt3_1_e_1_2);
-    string script6 = "¼­¼­È÷ ½Ã¾ß°¡ Èå·ÁÁø´Ù...\n";
+    string script6 = "ì„œì„œíˆ ì‹œì•¼ê°€ íë ¤ì§„ë‹¤...\n";
     scriptEx(script6, cnt3_1_e_1_2);
     cnt3_1_e_1_2++;
 
@@ -647,14 +702,14 @@ list<char> story3_1_e_2() //¹è ÈÉÃÄ°£ °æ¿ì
     printf(".\n");
     Sleep(500);
 
-    setcolor(12, 0); //»¡°£»ö °ËÁ¤»ö
-    printf("¾Ë ¼ö ¾ø´Â ÀÌÀÇ È­»ìÀ» ¸Â°í »ç¸ÁÇÏ¿´½À´Ï´Ù. \n");
-    setcolor(15, 0); //Èò»ö °ËÁ¤»ö
+    setColor(red, black); //ë¹¨ê°„ìƒ‰ ê²€ì •ìƒ‰
+    printf("ì•Œ ìˆ˜ ì—†ëŠ” ì´ì˜ í™”ì‚´ì„ ë§ê³  ì‚¬ë§í•˜ì˜€ìŠµë‹ˆë‹¤. \n");
+    setColor(white, black); //í°ìƒ‰ ê²€ì •ìƒ‰
     Sleep(SLEEP_TIME);
 
-    printf("¸®½ºÆù ÇÏ·Á¸é 1À» ´©¸£½Ã¿À. \n\n");
+    printf("ë¦¬ìŠ¤í° í•˜ë ¤ë©´ 1ì„ ëˆ„ë¥´ì‹œì˜¤. \n\n");
 
-    totalscore += 100;
+    totalscore -= 100;
 
     while (keyCheckerIgnoreCase('1') == false)
     {
@@ -666,64 +721,64 @@ list<char> story3_1_e_2() //¹è ÈÉÃÄ°£ °æ¿ì
     return callStoryFunc();
 }
 
-list<char> story3_2() //°­À¸·Î
+list<char> story3_2() //ê°•ìœ¼ë¡œ
 {
-    string script1 = "¾î´À»õ °­¿¡ µµÂøÇß´Ù. \n";
+    string script1 = "ì–´ëŠìƒˆ ê°•ì— ë„ì°©í–ˆë‹¤. \n";
     scriptEx(script1, cnt3_2);
-    string script2 = "»ç½Ç ÀÌ°÷¿¡ ¿Í¼­ Àú ³ôÀº °÷¿¡ ÆøÆ÷°¡ ÀÖ´Ù´Â °ÍÀ» ¾Ë°í Á÷°¨ÀûÀ¸·Î °­ÀÌ ÀÖÀ½À» ÀÎÁöÇß´Ù. \n\n";
+    string script2 = "ì‚¬ì‹¤ ì´ê³³ì— ì™€ì„œ ì € ë†’ì€ ê³³ì— í­í¬ê°€ ìˆë‹¤ëŠ” ê²ƒì„ ì•Œê³  ì§ê°ì ìœ¼ë¡œ ê°•ì´ ìˆìŒì„ ì¸ì§€í–ˆë‹¤. \n\n";
     scriptEx(script2, cnt3_2);
-    string script3 = "°­Àº »ı°¢º¸´Ù ±æ°í ³Ğ¾î¼­ °­ÀÇ ÇÏ·ù·Î °É¾î ³»·Á°¡°íÀÚ ÇÑ´Ù. \n\n\n\n";
+    string script3 = "ê°•ì€ ìƒê°ë³´ë‹¤ ê¸¸ê³  ë„“ì–´ì„œ ê°•ì˜ í•˜ë¥˜ë¡œ ê±¸ì–´ ë‚´ë ¤ê°€ê³ ì í•œë‹¤. \n\n\n\n";
     scriptEx(script3, cnt3_2);
 
-    string script4 = "°è¼Ó °È´Ùº¸´Ï ¸¶À»·Î ÃßÁ¤µÇ´Â °ÍÀÌ º¸ÀÌ±â ½ÃÀÛÇÑ´Ù! µåµğ¾î ¸Ó¹«¸¦ °÷ÀÌ »ı±ä °ÍÀÎ°¡?\n\n";
+    string script4 = "ê³„ì† ê±·ë‹¤ë³´ë‹ˆ ë§ˆì„ë¡œ ì¶”ì •ë˜ëŠ” ê²ƒì´ ë³´ì´ê¸° ì‹œì‘í•œë‹¤! ë“œë””ì–´ ë¨¸ë¬´ë¥¼ ê³³ì´ ìƒê¸´ ê²ƒì¸ê°€?\n\n";
     scriptEx(script4, cnt3_2);
-    string script5 = "¸¶À» Á¤¹®À¸·Î °¡´Ï ¹®Áö±â·Î ÃßÁ¤µÇ´Â »ç¶÷ÀÌ ¸»À» °É¾ú´Ù. \n\n";
+    string script5 = "ë§ˆì„ ì •ë¬¸ìœ¼ë¡œ ê°€ë‹ˆ ë¬¸ì§€ê¸°ë¡œ ì¶”ì •ë˜ëŠ” ì‚¬ëŒì´ ë§ì„ ê±¸ì—ˆë‹¤. \n\n";
     scriptEx(script5, cnt3_2);
 
-    setcolor(10, 0);
-    string script6 = "[¹®Áö±â] : ±æÀ» ÀÒ¾ú´Â°¡?\n\n";
+    setColor(10, 0);
+    string script6 = "[ë¬¸ì§€ê¸°] : ê¸¸ì„ ìƒì—ˆëŠ”ê°€?\n\n";
     scriptEx(script6, cnt3_2);
     cnt3_2++;
 
-    setcolor(15, 0);
-    printf("1. ¿¹. È¤½Ã Á¦°¡ ¸Ó¹«¸¦ °÷ÀÌ¶óµµ ÀÖ³ª¿ä?\n");
-    printf("2. ¾Æ´Ï¿À. Àúµµ ÀÌ ¼¶ °ÅÁÖÀÚÀÔ´Ï´Ù. ^^ \n\n");
+    setColor(white, black);
+    printf("1. ì˜ˆ. í˜¹ì‹œ ì œê°€ ë¨¸ë¬´ë¥¼ ê³³ì´ë¼ë„ ìˆë‚˜ìš”?\n");
+    printf("2. ì•„ë‹ˆì˜¤. ì €ë„ ì´ ì„¬ ê±°ì£¼ìì…ë‹ˆë‹¤. ^^ \n\n");
 
     return list<char>{'1', '2'};
 }
 
 list<char> story3_2_1()
 {
-    setcolor(10, 0);
-    string script1 = "[¹®Áö±â] : ÀúÈñ°¡ ²À ±×·¡¾ß ÇÏ´Â ÀÌÀ¯°¡ ÀÖ³ª¿ä? \n\n";
+    setColor(10, 0);
+    string script1 = "[ë¬¸ì§€ê¸°] : ì €í¬ê°€ ê¼­ ê·¸ë˜ì•¼ í•˜ëŠ” ì´ìœ ê°€ ìˆë‚˜ìš”? \n\n";
     scriptEx(script1, cnt3_2_1);
     cnt3_2_1++;
 
-    setcolor(15, 0);
-    printf("1. Á¦°¡ °¡Áø °ÍµéÀ» ±×·¡µµ Á» ÀÖ¾î¿ä! \n");
-    printf("2. ±Û½ê¿ä ÀÖÀ»±î¿ä? \n\n");
+    setColor(white, black);
+    printf("1. ì œê°€ ê°€ì§„ ê²ƒë“¤ì„ ê·¸ë˜ë„ ì¢€ ìˆì–´ìš”! \n");
+    printf("2. ê¸€ì„ìš” ìˆì„ê¹Œìš”? \n\n");
 
     return list<char>{'1', '2'};
 }
 
 list<char> story3_2_2()
 {
-    setcolor(10, 0);
-    string script1 = "[¹®Áö±â] : ±×·¸´Ù¸é ÀÌ¸¸ µ¹¾Æ°¡½ÃÁÒ. \n\n";
+    setColor(10, 0);
+    string script1 = "[ë¬¸ì§€ê¸°] : ê·¸ë ‡ë‹¤ë©´ ì´ë§Œ ëŒì•„ê°€ì‹œì£ . \n\n";
     scriptEx(script1, cnt3_3_2);
     cnt3_3_2++;
 
-    setcolor(15, 0);
-    printf("1. ¾Æ´Õ´Ï´Ù! ±×·¡µµ Á¦°¡ ¸Ó¹«¸¦ °÷ÀÌ ÀÖÀ»±î¿ä..? \n\n");
+    setColor(white, black);
+    printf("1. ì•„ë‹™ë‹ˆë‹¤! ê·¸ë˜ë„ ì œê°€ ë¨¸ë¬´ë¥¼ ê³³ì´ ìˆì„ê¹Œìš”..? \n\n");
 
     popStoryPath();
     pushStoryPath('1');
     return callStoryFunc();
 }
 
-list<char> story3_2_1_1() //ÀÎº¥Åä¸® È®ÀÎ, µ¿Àü±³È¯ °úÁ¤ -> µ¿Àü ¼±ÅÃ ¾Æ´Ï¸é ´Ù¸¥ °á°ú
+list<char> story3_2_1_1() //ì¸ë²¤í† ë¦¬ í™•ì¸, ë™ì „êµí™˜ ê³¼ì • -> ë™ì „ ì„ íƒ ì•„ë‹ˆë©´ ë‹¤ë¥¸ ê²°ê³¼
 {
-    setcolor(10, 0);
+    setColor(10, 0);
     string script1 = "";
 
     rebuildStoryPath(list<char>{'3', '2', 'e', '1'});
@@ -732,67 +787,88 @@ list<char> story3_2_1_1() //ÀÎº¥Åä¸® È®ÀÎ, µ¿Àü±³È¯ °úÁ¤ -> µ¿Àü ¼±ÅÃ ¾Æ´Ï¸é ´Ù¸
 
 list<char> story3_2_1_2()
 {
-    setcolor(10, 0);
-    string script1 = "[¹®Áö±â] : (¹¹Áö ÀÌ ½Î°¡Áö´Â...?) ±×·³ ÀÌ¸¸ µ¹¾Æ°¡½ÃÁÒ. \n\n";
+    setColor(10, 0);
+    string script1 = "[ë¬¸ì§€ê¸°] : (ë­ì§€ ì´ ì‹¸ê°€ì§€ëŠ”...?) ê·¸ëŸ¼ ì´ë§Œ ëŒì•„ê°€ì‹œì£ . \n\n";
     scriptEx(script1, cnt3_2_1_2);
     cnt3_2_1_2++;
 
-    setcolor(15, 0);
-    printf("1. ¾Æ´Õ´Ï´Ù! Á¦°¡ °¡Áø °ÍµéÀÌ ÀÖ¾î¿ä! (ºü¸¥ ¼ö½À)\n\n");
+    setColor(white, black);
+    printf("1. ì•„ë‹™ë‹ˆë‹¤! ì œê°€ ê°€ì§„ ê²ƒë“¤ì´ ìˆì–´ìš”! (ë¹ ë¥¸ ìˆ˜ìŠµ)\n\n");
 
     popStoryPath();
     pushStoryPath('1');
     return callStoryFunc();
 }
 
-list<char> story3_2_e_1() //story3_2_1_1 ÀÌÈÄ¿¡ ¹Ù·Î
+list<char> story3_2_e_1() //story3_2_1_1 ì´í›„ì— ë°”ë¡œ
 {
-    string script1 = "±×·¸°Ô ³ª´Â ±×µé°ú ÇÔ²² ±¸¼º¿øÀÇ ÀÏºÎ·Î¼­ »ì¾Æ°¬´Ù. \n\n";
+    string script1 = "ê·¸ë ‡ê²Œ ë‚˜ëŠ” ê·¸ë“¤ê³¼ í•¨ê»˜ êµ¬ì„±ì›ì˜ ì¼ë¶€ë¡œì„œ ì‚´ì•„ê°”ë‹¤. \n\n";
     scriptEx(script1, cnt3_2_e_1);
-    string script2 = "¼ÖÁ÷È÷ ¸»ÇØ¼­ ÃÊ¹İ¿¡´Â Èûµé¾ú´Ù. ³»°¡ ±×µ¿¾È »ì¾Æ¿Â ¹æ½Ä°ú´Â ¸¹ÀÌ ´Ş¶ú±â¿¡. \n\n";
+    string script2 = "ì†”ì§íˆ ë§í•´ì„œ ì´ˆë°˜ì—ëŠ” í˜ë“¤ì—ˆë‹¤. ë‚´ê°€ ê·¸ë™ì•ˆ ì‚´ì•„ì˜¨ ë°©ì‹ê³¼ëŠ” ë§ì´ ë‹¬ëê¸°ì—. \n\n";
     scriptEx(script2, cnt3_2_e_1);
-    string script3 = "±×µéÀÌ ¸»ÇÏ´Â´ë·Î, ±×µéÀÌ ¸Ô´Â´ë·Î, ±×µéÀÌ ÀÔ´Â´ë·Î »ıÈ°Çß´Ù. \n\n";
+    string script3 = "ê·¸ë“¤ì´ ë§í•˜ëŠ”ëŒ€ë¡œ, ê·¸ë“¤ì´ ë¨¹ëŠ”ëŒ€ë¡œ, ê·¸ë“¤ì´ ì…ëŠ”ëŒ€ë¡œ ìƒí™œí–ˆë‹¤. \n\n";
     scriptEx(script3, cnt3_2_e_1);
-    string script4 = "¾î´À»õ ³ª´Â ³»°¡ ¿ø·¡ºÎÅÍ ±×µé°ú ÇÏ³ª¿´´Ù°í »ı°¢ÇÏ°í »ì¾Æ°¡°í ÀÖ¾ú´Ù. \n\n";
+    string script4 = "ì–´ëŠìƒˆ ë‚˜ëŠ” ë‚´ê°€ ì›ë˜ë¶€í„° ê·¸ë“¤ê³¼ í•˜ë‚˜ì˜€ë‹¤ê³  ìƒê°í•˜ê³  ì‚´ì•„ê°€ê³  ìˆì—ˆë‹¤. \n\n";
     scriptEx(script4, cnt3_2_e_1);
-    string script5 = "¾î´À»õ ÀÌ ¼¶¿¡ »ê Áö......\n\n\n";
+    string script5 = "ì–´ëŠìƒˆ ì´ ì„¬ì— ì‚° ì§€......\n\n\n";
     scriptEx(script5, cnt3_2_e_1);
-    string script6 = "453ÀÏÀÌ Áö³µ´Ù. \n";
+    string script6 = "453ì¼ì´ ì§€ë‚¬ë‹¤. \n";
     scriptEx(script6, cnt3_2_e_1);
     cnt3_2_e_1++;
 
     Sleep(SLEEP_TIME);
     printf("\n\n");
 
-    setColor(14, 0);
-    printf("´Ù¸¥ ¿£µùÀÌ ±Ã±İÇÏÁö ¾ÊÀ¸½Å°¡¿ä? \n\n");
-    printf("°ÔÀÓÀ» ´Ù½Ã ÇÃ·¹ÀÌÇÏ¿© ¿©·¯ ¿£µùÀ» °æÇèÇØº¸¼¼¿ä. \n\n");
+    setColor(yellow, black);
+    printf("ë‹¤ë¥¸ ì—”ë”©ì´ ê¶ê¸ˆí•˜ì§€ ì•Šìœ¼ì‹ ê°€ìš”? \n\n");
+    printf("ê²Œì„ì„ ë‹¤ì‹œ í”Œë ˆì´í•˜ì—¬ ì—¬ëŸ¬ ì—”ë”©ì„ ê²½í—˜í•´ë³´ì„¸ìš”. \n\n");
 
     return list<char>{};
 }
 
-list<char> story3_3() //½£À¸·Î
+list<char> story3_3() //ìˆ²ìœ¼ë¡œ
 {
-    string script1 = "Çª¸£¸¥ Ç® ³¿»õ·Î °¡µæÇÑ ³ìÀ½À¸·Î ÀÌ·ç¾îÁø ¿ïÃ¢ÇÑ ½£ ¾Õ¿¡ µµÂøÇÏ¿´´Ù. \n";
+    string script1 = "í‘¸ë¥´ë¥¸ í’€ ëƒ„ìƒˆë¡œ ê°€ë“í•œ ë…¹ìŒìœ¼ë¡œ ì´ë£¨ì–´ì§„ ìš¸ì°½í•œ ìˆ² ì•ì— ë„ì°©í•˜ì˜€ë‹¤. \n";
     scriptEx(script1, cnt3_3);
-    string script2 = "±»ÀÌ Áü½ÂÀÌ ¾Æ´Ï´õ¶óµµ ½£ÀÌ´Ù º¸´Ï ¹¹¶óµµ ¸ÔÀ»°Ô ÀÖÁö ¾ÊÀ»±î..? \n\n";
+    string script2 = "êµ³ì´ ì§ìŠ¹ì´ ì•„ë‹ˆë”ë¼ë„ ìˆ²ì´ë‹¤ ë³´ë‹ˆ ë­ë¼ë„ ë¨¹ì„ê²Œ ìˆì§€ ì•Šì„ê¹Œ..? \n\n";
     scriptEx(script2, cnt3_3);
-    string script3 = "¾Ñ! Àú±â Åä³¢°¡ Áö³ª°£´Ù! ´õ ¸Ö¾îÁö±â Àü¿¡ »¡¸® Àâ¾Æ¾ß ÇÑ´Ù! \n\n";
+    string script3 = "ì•—! ì €ê¸° í† ë¼ê°€ ì§€ë‚˜ê°„ë‹¤! ë” ë©€ì–´ì§€ê¸° ì „ì— ë¹¨ë¦¬ ì¡ì•„ì•¼ í•œë‹¤! \n\n";
     scriptEx(script3, cnt3_3);
-    string script4 = "¾î¼­ Åä³¢¸¦ Àâ¾Æº¸ÀÚ! \n\n\n";
+    string script4 = "ì–´ì„œ í† ë¼ë¥¼ ì¡ì•„ë³´ì! \n\n\n";
     scriptEx(script4, cnt3_3);
     cnt3_3++;
 
-    setcolor(14, 0);
-    printf("------------------Åä³¢¸¦ Àâ¾Æ¶ó! minigame Æ©Åä¸®¾ó------------------\n\n");
-    printf("         ÇöÀç Åä³¢°¡ º¸ÀÌÁö ¾Ê´Â »óÈ²¿¡¼­ °¥¸²±æ¿¡ µµÂøÇÏ¸é\n");
+    setColor(yellow, black);
+    printf("------------------í† ë¼ë¥¼ ì¡ì•„ë¼! minigame íŠœí† ë¦¬ì–¼------------------\n\n");
+    printf("         í˜„ì¬ í† ë¼ê°€ ë³´ì´ì§€ ì•ŠëŠ” ìƒí™©ì—ì„œ ê°ˆë¦¼ê¸¸ì— ë„ì°©í•˜ë©´\n");
     Sleep(SLEEP_TIME);
-    printf("         ºü¸£°Ô ¿ŞÂÊ (LEFT) ¶Ç´Â ¿À¸¥ÂÊ (RIGHT) À» ¼±ÅÃÇÑ´Ù. \n");
+    printf("         ë¹ ë¥´ê²Œ ì™¼ìª½ (LEFT) ë˜ëŠ” ì˜¤ë¥¸ìª½ (RIGHT) ì„ ì„ íƒí•œë‹¤. \n");
     Sleep(SLEEP_TIME);
-    printf("    ÇÑ ¹øÀÇ ¼±ÅÃÀ» ÇÒ ¶§ ¸¶´Ù Åä³¢¸¦ ¸¸³¯ ¼öµµ, ¸ø ¸¸³¯ ¼öµµ ÀÖ´Ù.  \n");
+    printf("    í•œ ë²ˆì˜ ì„ íƒì„ í•  ë•Œ ë§ˆë‹¤ í† ë¼ë¥¼ ë§Œë‚  ìˆ˜ë„, ëª» ë§Œë‚  ìˆ˜ë„ ìˆë‹¤.  \n");
     Sleep(SLEEP_TIME);
-    printf(" °¥¸²±æÀ» ÃÑ 3¹ø ¸¸³ª°Ô µÇ¸ç 2¹ø ÀÌ»ó ¸¸³µ´Ù¸é Åä³¢¸¦ Àâ´Âµ¥ ¼º°øÇÑ´Ù! \n\n");
+    printf(" ê°ˆë¦¼ê¸¸ì„ ì´ 5ë²ˆ ë§Œë‚˜ê²Œ ë˜ë©° 3ë²ˆ ì´ìƒ ë§Œë‚¬ë‹¤ë©´ í† ë¼ë¥¼ ì¡ëŠ”ë° ì„±ê³µí•œë‹¤! \n\n");
     printf("-----------------------------------------------------------------------\n\n");
+    Sleep(2000);
+
+    printf("ê³„ì†í•˜ë ¤ë©´ 1ì„ ëˆ„ë¥´ì‹œì˜¤. \n\n");
+    setColor(white, black);
+    /*
+    int n;
+    scanf("%d", &n);
+
+    if (n == 1)
+    {
+        story1_2_1();
+    }
+    */
+    //ì•„ë‹ ë•ŒëŠ” ì–´ë–»ê²Œ í•˜ì§€?
+
+    totalscore -= 100;
+
+    while (keyCheckerIgnoreCase('1') == false)
+    {
+        Sleep(100);
+    }
 
     pushStoryPath('m');
     return callStoryFunc();
@@ -800,50 +876,50 @@ list<char> story3_3() //½£À¸·Î
 
 list<char> story3_3_m()
 {
-    string script1 = "Àú±â°¡ Áö³ª°£ ÈçÀûÀÌ º¸ÀÎ´Ù! °¥¸²±æÀÌ ÀÖ±º! \n\n";
+    string script1 = "ì €ê¸° ì§€ë‚˜ê°„ í”ì ì´ ë³´ì¸ë‹¤! ê°ˆë¦¼ê¸¸ì´ ìˆêµ°! \n\n";
     scriptEx(script1, cnt3_3_m);
     cnt3_3_m++;
 
-    int cnt = 3;
-    int answer[3] = { '1', '2', '1' };
+    int cnt = 5;
+    int answer[5] = {'1','2','1','2','2'};
     while (cnt--)
     {
-        printf("1. ¿ŞÂÊ\n");
-        printf("2. ¿À¸¥ÂÊ");
+        printf("1. ì™¼ìª½\n\n");
+        printf("2. ì˜¤ë¥¸ìª½");
 
         int key = pressedKey();
-        if (answer[3 - cnt] == key)
+        if (answer[5 - cnt] == key)
         {
             system("cls");
-            printf("Àâ¾Ò´Ù");
+            printf("ì¡ì•˜ë‹¤");
             bunnycatch++;
         }
         else
         {
             system("cls");
-            printf("³õÃÆ´Ù");
+            printf("ë†“ì³¤ë‹¤");
         }
-        
+
         Sleep(SLEEP_TIME);
         system("cls");
     }
 
-    if (bunnycatch >= 2)
+    if (bunnycatch >= 3)
     {
         M.Hp += 10;
-        string script1 = "Åä³¢¸¦ Àâ¾Ò´Ù! ÀÌ°É·Î ³¢´Ï ÇØ°áÀº °¡´ÉÇÏ°Ú±º! \n";
+        string script1 = "í† ë¼ë¥¼ ì¡ì•˜ë‹¤! ì´ê±¸ë¡œ ë¼ë‹ˆ í•´ê²°ì€ ê°€ëŠ¥í•˜ê² êµ°! \n";
         scriptEx(script1, cnt3_3);
         cnt3_3++;
     }
 
-    else if (bunnycatch < 2)
+    else if (bunnycatch < 3)
     {
         M.Hp -= 10;
-        string script2 = "Åä³¢¸¦ ³õÃÆ´Ù...¿­½ÉÈ÷ »ç³ÉÇß´õ´Ï ³Ê¹« ¹è°íÇÁ´Ù...\n";
+        string script2 = "í† ë¼ë¥¼ ë†“ì³¤ë‹¤...ì—´ì‹¬íˆ ì‚¬ëƒ¥í–ˆë”ë‹ˆ ë„ˆë¬´ ë°°ê³ í”„ë‹¤...\n";
         scriptEx(script2, cnt3_3);
         cnt3_3++;
     }
-    
+
     popStoryPath();
     pushStoryPath('e');
     pushStoryPath('1');
@@ -855,15 +931,15 @@ list<char> story3_3_m()
 
 list<char> story3_3_e_1()
 {
-    string script1 = "¾îµÎ¿öÁö¸é ¾Ë ¼ö ¾ø´Â Áü½Âµé°ú ÃßÀ§ ¶§¹®¿¡ À§ÇèÇÏ´Ù. \n";
+    string script1 = "ì–´ë‘ì›Œì§€ë©´ ì•Œ ìˆ˜ ì—†ëŠ” ì§ìŠ¹ë“¤ê³¼ ì¶”ìœ„ ë•Œë¬¸ì— ìœ„í—˜í•˜ë‹¤. \n";
     scriptEx(script1, cnt3_3_1);
-    string script2 = "¾î¼­ ³ª¸¦ º¸È£ÇÒ ¼ö ÀÖ´Â ÁıÀ» Áö¾î¾ß ÇÑ´Ù. \n\n";
+    string script2 = "ì–´ì„œ ë‚˜ë¥¼ ë³´í˜¸í•  ìˆ˜ ìˆëŠ” ì§‘ì„ ì§€ì–´ì•¼ í•œë‹¤. \n\n";
     scriptEx(script2, cnt3_3_1);
     cnt3_3_1++;
 
-    //ÀÌ·¸°Ô ÇÏ¸é ¾ÈµÉ°Å °°Àºµ¥
+    //ì´ë ‡ê²Œ í•˜ë©´ ì•ˆë ê±° ê°™ì€ë°
 
-    string script3 = "ÀÎº¥Åä¸® ¼Ó¿¡ »ç¿ëÇÒ¸¸ÇÑ ³ª¹«°¡ ÀÖ´ÂÁö È®ÀÎÇØº¸ÀÚ. \n"; //ÀÎº¥Åä¸® È®ÀÎ
+    string script3 = "ì¸ë²¤í† ë¦¬ ì†ì— ì‚¬ìš©í• ë§Œí•œ ë‚˜ë¬´ê°€ ìˆëŠ”ì§€ í™•ì¸í•´ë³´ì. \n"; //ì¸ë²¤í† ë¦¬ í™•ì¸
     scriptEx(script3, cnt3_3_1);
 
     //return list<char>story3_3_1();
@@ -872,7 +948,7 @@ list<char> story3_3_e_1()
 
 list<char> story3_3_e_2()
 {
-    string script1 = "ÀÌ Á¤µµ¸é ÁıÀ» Áş±â¿¡ ÃæºĞÇÏ´Ù. ¾î¼­ ³ª¹« ÁıÀ» Áö¾îº¸ÀÚ. \n\n";
+    string script1 = "ì´ ì •ë„ë©´ ì§‘ì„ ì§“ê¸°ì— ì¶©ë¶„í•˜ë‹¤. ì–´ì„œ ë‚˜ë¬´ ì§‘ì„ ì§€ì–´ë³´ì. \n\n";
     scriptEx(script1, cnt3_3_2);
 
     printf(".\n\n");
@@ -881,24 +957,24 @@ list<char> story3_3_e_2()
     Sleep(SLEEP_TIME);
     printf(".\n\n\n");
 
-    string script2 = "±×·¸°Ô ³ª´Â ¹«»çÈ÷ ³ª¹« ÁıÀ» Áö¾ú°í Á¶±İ¾¿ ½Ä·®À» ¸ğÀ¸¸ç ¾î´À Á¤µµ Á¤ÂøÇÏ¿´´Ù. \n\n";
+    string script2 = "ê·¸ë ‡ê²Œ ë‚˜ëŠ” ë¬´ì‚¬íˆ ë‚˜ë¬´ ì§‘ì„ ì§€ì—ˆê³  ì¡°ê¸ˆì”© ì‹ëŸ‰ì„ ëª¨ìœ¼ë©° ì–´ëŠ ì •ë„ ì •ì°©í•˜ì˜€ë‹¤. \n\n";
     scriptEx(script2, cnt3_3_2);
-    string script3 = "Áıµµ ¼­¼­È÷ ³ĞÇô°¬°í ¼¶ÀÇ ±¸Á¶µµ ´©±¸º¸´Ù Àß ¾Ë°Ô µÇ¾ú´Ù. \n\n";
+    string script3 = "ì§‘ë„ ì„œì„œíˆ ë„“í˜€ê°”ê³  ì„¬ì˜ êµ¬ì¡°ë„ ëˆ„êµ¬ë³´ë‹¤ ì˜ ì•Œê²Œ ë˜ì—ˆë‹¤. \n\n";
     scriptEx(script3, cnt3_2_2);
-    string script4 = "Å»Ãâ¿¡ ´ëÇÑ Èñ¸ÁÀº ¹ö¸°Áö ¿À·¡...\n\n";
+    string script4 = "íƒˆì¶œì— ëŒ€í•œ í¬ë§ì€ ë²„ë¦°ì§€ ì˜¤ë˜...\n\n";
     scriptEx(script4, cnt3_2_2);
-    string script5 = "¾î´À»õ ÀÌ ¼¶¿¡ »ê Áö......\n\n\n";
+    string script5 = "ì–´ëŠìƒˆ ì´ ì„¬ì— ì‚° ì§€......\n\n\n";
     scriptEx(script5, cnt3_2_2);
-    string script6 = "453ÀÏÀÌ Áö³µ´Ù. \n";
+    string script6 = "453ì¼ì´ ì§€ë‚¬ë‹¤. \n";
     scriptEx(script6, cnt3_2_2);
     cnt3_2_2++;
 
     Sleep(SLEEP_TIME);
     printf("\n\n");
 
-    setColor(14, 0);
-    printf("´Ù¸¥ ¿£µùÀÌ ±Ã±İÇÏÁö ¾ÊÀ¸½Å°¡¿ä? \n\n");
-    printf("°ÔÀÓÀ» ´Ù½Ã ÇÃ·¹ÀÌÇÏ¿© ¿©·¯ ¿£µùÀ» °æÇèÇØº¸¼¼¿ä. \n\n");
+    setColor(yellow, black);
+    printf("ë‹¤ë¥¸ ì—”ë”©ì´ ê¶ê¸ˆí•˜ì§€ ì•Šìœ¼ì‹ ê°€ìš”? \n\n");
+    printf("ê²Œì„ì„ ë‹¤ì‹œ í”Œë ˆì´í•˜ì—¬ ì—¬ëŸ¬ ì—”ë”©ì„ ê²½í—˜í•´ë³´ì„¸ìš”. \n\n");
 
     return list<char>{};
 }
