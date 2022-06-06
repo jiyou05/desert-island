@@ -120,15 +120,31 @@ void print_inventory()
 
     // 위에서부터 순서대로 아이템 목록을 출력한다.
     gotoxy(pos.x, pos.y); // -2 한 이유는 > 를 출력해야하기 때문에  
+    setColor(green, black);
     printf("> [부싯돌]");
+    setColor(white, black);
+    printf(" : 주변에 굴러다리는 평범한 돌. 이걸로 불을 피울 수 있을까?\n\n");
     gotoxy(pos.x+2, pos.y + 1);
+    setColor(green, black);
     printf("[안경]");
+    setColor(white, black);
+    printf(" : 눈이 나빠 돋보기 안경을 쓴다. 닦은지 오래되어 뿌옇게 보인다. \n\n");
     gotoxy(pos.x+2, pos.y + 2);
+    setColor(green, black);
     printf("[동전]");
+    setColor(white, black);
+    printf(" : 주머니에 굴러다니는 동전 몇 개. 총 300원 있다. \n\n");
     gotoxy(pos.x+2, pos.y + 3);
+    setColor(green, black);
     printf("[바나나]");
+    setColor(white, black);
+    printf(" : 옆에 있는 나무에서 따온 바나나. 평범하다. \n\n");
     gotoxy(pos.x+2, pos.y + 4);
+    setColor(green, black);
     printf("[자몽]");
+    setColor(white, black);
+    printf(" : 옆에 있는 나무에서 따온 자몽. 난 자몽을 싫어한다. \n");
+
 
 
     gotoxy(pos.x, pos.y + 5);
